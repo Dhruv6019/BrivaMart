@@ -2,15 +2,14 @@
 import React, { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import HumanoidSection from "@/components/HumanoidSection";
-import SpecsSection from "@/components/SpecsSection";
-import DetailsSection from "@/components/DetailsSection";
-import ImageShowcaseSection from "@/components/ImageShowcaseSection";
+import FeaturedProducts from "@/components/FeaturedProducts";
+import CategoriesSection from "@/components/CategoriesSection";
 import Features from "@/components/Features";
+import ImageShowcaseSection from "@/components/ImageShowcaseSection";
 import Testimonials from "@/components/Testimonials";
 import Newsletter from "@/components/Newsletter";
-import MadeByHumans from "@/components/MadeByHumans";
 import Footer from "@/components/Footer";
+import { CartProvider } from "../contexts/CartContext";
 
 const Index = () => {
   // Initialize intersection observer to detect when elements enter viewport
@@ -59,21 +58,21 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main className="space-y-4 sm:space-y-8"> {/* Reduced space on mobile */}
-        <Hero />
-        <HumanoidSection />
-        <SpecsSection />
-        <DetailsSection />
-        <ImageShowcaseSection />
-        <Features />
-        <Testimonials />
-        <Newsletter />
-        <MadeByHumans />
-      </main>
-      <Footer />
-    </div>
+    <CartProvider>
+      <div className="min-h-screen">
+        <Navbar />
+        <main className="space-y-4 sm:space-y-8">
+          <Hero />
+          <FeaturedProducts />
+          <CategoriesSection />
+          <Features />
+          <ImageShowcaseSection />
+          <Testimonials />
+          <Newsletter />
+        </main>
+        <Footer />
+      </div>
+    </CartProvider>
   );
 };
 

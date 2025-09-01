@@ -1,11 +1,16 @@
 
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart } from "lucide-react";
+import { useCartContext } from "../contexts/CartContext";
+import { Button } from "./ui/button";
+import CartSidebar from "./CartSidebar";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { getCartItemsCount, wishlistItems } = useCartContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,18 +78,49 @@ const Navbar = () => {
           >
             Home
           </a>
+          <a href="#featured-products" className="nav-link">Products</a>
+          <a href="#categories" className="nav-link">Categories</a>
           <a href="#features" className="nav-link">About</a>
-          <a href="#details" className="nav-link">Contact</a>
         </nav>
 
-        {/* Mobile menu button - increased touch target */}
-        <button 
-          className="md:hidden text-gray-700 p-3 focus:outline-none" 
-          onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Cart & Actions */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative"
+            onClick={() => setIsCartOpen(true)}
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {getCartItemsCount() > 0 && (
+              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {getCartItemsCount()}
+              </span>
+            )}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative hidden md:inline-flex"
+          >
+            <Heart className="w-5 h-5" />
+            {wishlistItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {wishlistItems.length}
+              </span>
+            )}
+          </Button>
+
+          {/* Mobile menu button */}
+          <button 
+            className="md:hidden text-gray-700 p-3 focus:outline-none" 
+            onClick={toggleMenu}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation - improved for better touch experience */}
@@ -106,6 +142,26 @@ const Navbar = () => {
             Home
           </a>
           <a 
+            href="#featured-products" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Products
+          </a>
+          <a 
+            href="#categories" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Categories
+          </a>
+          <a 
             href="#features" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
             onClick={() => {
@@ -115,18 +171,17 @@ const Navbar = () => {
           >
             About
           </a>
-          <a 
-            href="#details" 
-            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
-            onClick={() => {
-              setIsMenuOpen(false);
-              document.body.style.overflow = '';
-            }}
-          >
-            Contact
-          </a>
         </nav>
       </div>
+
+      <CartSidebar 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)}
+        onCheckout={() => {
+          // TODO: Navigate to checkout page
+          console.log('Navigate to checkout');
+        }}
+      />
     </header>
   );
 };
