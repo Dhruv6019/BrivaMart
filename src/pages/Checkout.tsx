@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCartContext } from '../contexts/CartContext';
+import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -76,7 +77,9 @@ const Checkout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => navigate('/cart')}>
@@ -476,7 +479,8 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

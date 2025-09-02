@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCartContext } from '../contexts/CartContext';
+import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -30,7 +31,9 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background pt-20">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center max-w-md mx-auto">
             <ShoppingBag className="h-24 w-24 text-muted-foreground mx-auto mb-6" />
@@ -43,12 +46,15 @@ const Cart = () => {
             </Button>
           </div>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -212,7 +218,8 @@ const Cart = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

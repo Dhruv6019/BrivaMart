@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { products, categories } from '../data/mockData';
 import ProductGrid from '../components/ProductGrid';
 import CategoryCard from '../components/CategoryCard';
+import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -69,7 +70,9 @@ const Products = () => {
   }, [searchTerm, selectedCategory, sortBy, priceRange]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20">
       {/* Header */}
       <div className="bg-muted/30 py-12">
         <div className="container mx-auto px-4">
@@ -203,7 +206,8 @@ const Products = () => {
         
         <ProductGrid products={filteredProducts} />
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

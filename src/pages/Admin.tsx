@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { products, categories, reviews } from '../data/mockData';
+import { Product, Category } from '../types';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Textarea } from '../components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { 
   Package, 
   Users, 
@@ -19,12 +21,19 @@ import {
   Plus,
   Eye,
   Star,
-  AlertTriangle
+  AlertTriangle,
+  Save,
+  X
 } from 'lucide-react';
+import { useToast } from '../hooks/use-toast';
+import Navbar from '../components/Navbar';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedProduct, setSelectedProduct] = useState(products[0]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingOrder, setEditingOrder] = useState<any>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   // Mock data for dashboard
   const dashboardStats = [
@@ -59,14 +68,71 @@ const Admin = () => {
   ];
 
   const recentOrders = [
-    { id: 'ORD-001', customer: 'John Doe', total: '$24,999', status: 'Processing', date: '2024-01-15' },
-    { id: 'ORD-002', customer: 'Sarah Smith', total: '$18,999', status: 'Shipped', date: '2024-01-15' },
-    { id: 'ORD-003', customer: 'Mike Johnson', total: '$12,999', status: 'Delivered', date: '2024-01-14' },
-    { id: 'ORD-004', customer: 'Emily Davis', total: '$45,999', status: 'Processing', date: '2024-01-14' },
-    { id: 'ORD-005', customer: 'Chris Wilson', total: '$24,999', status: 'Cancelled', date: '2024-01-13' }
+    { id: 'ORD-001', customer: 'John Doe', total: '$24,999', status: 'Processing', date: '2024-01-15', items: ['Atlas Pro Humanoid Robot'] },
+    { id: 'ORD-002', customer: 'Sarah Smith', total: '$18,999', status: 'Shipped', date: '2024-01-15', items: ['Companion Care Robot'] },
+    { id: 'ORD-003', customer: 'Mike Johnson', total: '$12,999', status: 'Delivered', date: '2024-01-14', items: ['Smart Home Hub Robot'] },
+    { id: 'ORD-004', customer: 'Emily Davis', total: '$45,999', status: 'Processing', date: '2024-01-14', items: ['Industrial Assistant Robot'] },
+    { id: 'ORD-005', customer: 'Chris Wilson', total: '$24,999', status: 'Cancelled', date: '2024-01-13', items: ['Atlas Pro Humanoid Robot'] }
   ];
 
   const lowStockProducts = products.filter(p => p.stockQuantity <= p.lowStockAlert);
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct({ ...product });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveProduct = () => {
+    if (editingProduct) {
+      // Update the product in the products array (in a real app, this would be an API call)
+      const index = products.findIndex(p => p.id === editingProduct.id);
+      if (index !== -1) {
+        products[index] = editingProduct;
+      }
+      
+      toast({
+        title: "Product updated",
+        description: "Product has been successfully updated.",
+      });
+      
+      setIsEditDialogOpen(false);
+      setEditingProduct(null);
+    }
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    // Remove product from array (in a real app, this would be an API call)
+    const index = products.findIndex(p => p.id === productId);
+    if (index !== -1) {
+      products.splice(index, 1);
+    }
+    
+    toast({
+      title: "Product deleted",
+      description: "Product has been successfully deleted.",
+      variant: "destructive",
+    });
+  };
+
+  const handleEditOrder = (order: any) => {
+    setEditingOrder({ ...order });
+  };
+
+  const handleSaveOrder = () => {
+    if (editingOrder) {
+      const index = recentOrders.findIndex(o => o.id === editingOrder.id);
+      if (index !== -1) {
+        recentOrders[index] = editingOrder;
+      }
+      
+      toast({
+        title: "Order updated",
+        description: "Order status has been successfully updated.",
+      });
+      
+      setEditingOrder(null);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -79,7 +145,9 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-background pt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
@@ -241,13 +309,18 @@ const Admin = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="icon">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleEditProduct(product)}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleDeleteProduct(product.id)}
+                          >
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
@@ -300,19 +373,48 @@ const Admin = () => {
                       <TableCell>{order.date}</TableCell>
                       <TableCell>{order.total}</TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status}
-                        </Badge>
+                        {editingOrder?.id === order.id ? (
+                          <Select
+                            value={editingOrder.status}
+                            onValueChange={(value) => setEditingOrder(prev => ({ ...prev, status: value }))}
+                          >
+                            <SelectTrigger className="w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Processing">Processing</SelectItem>
+                              <SelectItem value="Shipped">Shipped</SelectItem>
+                              <SelectItem value="Delivered">Delivered</SelectItem>
+                              <SelectItem value="Cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Badge className={getStatusColor(order.status)}>
+                            {order.status}
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="icon">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        {editingOrder?.id === order.id ? (
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={handleSaveOrder}>
+                              <Save className="h-4 w-4" />
+                            </Button>
+                            <Button size="sm" variant="ghost" onClick={() => setEditingOrder(null)}>
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleEditOrder(order)}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -346,7 +448,8 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

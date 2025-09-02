@@ -1,10 +1,13 @@
 
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { Menu, X, ShoppingCart, Heart } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart, User, LogOut } from "lucide-react";
 import { useCartContext } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import CartSidebar from "./CartSidebar";
 
 const Navbar = () => {
@@ -12,6 +15,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { getCartItemsCount, wishlistItems } = useCartContext();
+  const { user, logout, isAdmin } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,14 +67,14 @@ const Navbar = () => {
           />
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
           <Link to="/" className="nav-link">
             Home
           </Link>
           <Link to="/products" className="nav-link">Products</Link>
-          <Link to="/cart" className="nav-link">Cart</Link>
-          <Link to="/admin" className="nav-link">Admin</Link>
+          {isAdmin && (
+            <Link to="/admin" className="nav-link">Admin</Link>
+          )}
         </nav>
 
         {/* Cart & Actions */}
@@ -103,6 +107,56 @@ const Navbar = () => {
               </span>
             )}
           </Button>
+
+          {/* User Menu */}
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.avatar} alt={user.firstName} />
+                    <AvatarFallback>
+                      {user.firstName?.[0]}{user.lastName?.[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-1 leading-none">
+                    <p className="font-medium">{user.firstName} {user.lastName}</p>
+                    <p className="w-[200px] truncate text-sm text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin">
+                      <User className="mr-2 h-4 w-4" />
+                      Admin Panel
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild>
+              <Link to="/login">Sign In</Link>
+            </Button>
+          )}
 
           {/* Mobile menu button */}
           <button 
@@ -151,16 +205,53 @@ const Navbar = () => {
           >
             Cart
           </Link>
-          <Link 
-            to="/admin" 
-            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
-            onClick={() => {
-              setIsMenuOpen(false);
-              document.body.style.overflow = '';
-            }}
-          >
-            Admin
-          </Link>
+          {user ? (
+            <>
+              <Link 
+                to="/profile" 
+                className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document.body.style.overflow = '';
+                }}
+              >
+                Profile
+              </Link>
+              {isAdmin && (
+                <Link 
+                  to="/admin" 
+                  className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    document.body.style.overflow = '';
+                  }}
+                >
+                  Admin
+                </Link>
+              )}
+              <button
+                className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+                onClick={() => {
+                  logout();
+                  setIsMenuOpen(false);
+                  document.body.style.overflow = '';
+                }}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <Link 
+              to="/login" 
+              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+              onClick={() => {
+                setIsMenuOpen(false);
+                document.body.style.overflow = '';
+              }}
+            >
+              Sign In
+            </Link>
+          )}
         </nav>
       </div>
 
