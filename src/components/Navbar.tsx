@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X, ShoppingCart, Heart } from "lucide-react";
 import { useCartContext } from "../contexts/CartContext";
 import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 import CartSidebar from "./CartSidebar";
 
 const Navbar = () => {
@@ -50,13 +51,9 @@ const Navbar = () => {
       )}
     >
       <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a 
-          href="#" 
+        <Link 
+          to="/" 
           className="flex items-center space-x-2"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToTop();
-          }}
           aria-label="Pulse Robot"
         >
           <img 
@@ -64,23 +61,16 @@ const Navbar = () => {
             alt="Pulse Robot Logo" 
             className="h-7 sm:h-8" 
           />
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8">
-          <a 
-            href="#" 
-            className="nav-link"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToTop();
-            }}
-          >
+          <Link to="/" className="nav-link">
             Home
-          </a>
-          <a href="#featured-products" className="nav-link">Products</a>
-          <a href="#categories" className="nav-link">Categories</a>
-          <a href="#features" className="nav-link">About</a>
+          </Link>
+          <Link to="/products" className="nav-link">Products</Link>
+          <Link to="/cart" className="nav-link">Cart</Link>
+          <Link to="/admin" className="nav-link">Admin</Link>
         </nav>
 
         {/* Cart & Actions */}
@@ -89,14 +79,16 @@ const Navbar = () => {
             variant="ghost"
             size="icon"
             className="relative"
-            onClick={() => setIsCartOpen(true)}
+            asChild
           >
-            <ShoppingCart className="w-5 h-5" />
-            {getCartItemsCount() > 0 && (
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {getCartItemsCount()}
-              </span>
-            )}
+            <Link to="/cart">
+              <ShoppingCart className="w-5 h-5" />
+              {getCartItemsCount() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {getCartItemsCount()}
+                </span>
+              )}
+            </Link>
           </Button>
 
           <Button
@@ -129,20 +121,18 @@ const Navbar = () => {
         isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
       )}>
         <nav className="flex flex-col space-y-8 items-center mt-8">
-          <a 
-            href="#" 
+          <Link 
+            to="/" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToTop();
+            onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
             }}
           >
             Home
-          </a>
-          <a 
-            href="#featured-products" 
+          </Link>
+          <Link 
+            to="/products" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
             onClick={() => {
               setIsMenuOpen(false);
@@ -150,37 +140,33 @@ const Navbar = () => {
             }}
           >
             Products
-          </a>
-          <a 
-            href="#categories" 
+          </Link>
+          <Link 
+            to="/cart" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
             onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
             }}
           >
-            Categories
-          </a>
-          <a 
-            href="#features" 
+            Cart
+          </Link>
+          <Link 
+            to="/admin" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
             onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
             }}
           >
-            About
-          </a>
+            Admin
+          </Link>
         </nav>
       </div>
 
       <CartSidebar 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)}
-        onCheckout={() => {
-          // TODO: Navigate to checkout page
-          console.log('Navigate to checkout');
-        }}
       />
     </header>
   );
