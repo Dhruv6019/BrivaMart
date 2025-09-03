@@ -27,12 +27,14 @@ import {
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import Navbar from '../components/Navbar';
+import AddProductDialog from '../components/AddProductDialog';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const { toast } = useToast();
 
   // Mock data for dashboard
@@ -151,7 +153,7 @@ const Admin = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <Button>
+          <Button onClick={() => setIsAddProductOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Product
           </Button>
@@ -447,6 +449,74 @@ const Admin = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Add Product Dialog */}
+        <AddProductDialog
+          isOpen={isAddProductOpen}
+          onClose={() => setIsAddProductOpen(false)}
+        />
+
+        {/* Edit Product Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Product</DialogTitle>
+            </DialogHeader>
+            {editingProduct && (
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="edit-name">Product Name</Label>
+                  <Input
+                    id="edit-name"
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct(prev => prev ? { ...prev, name: e.target.value } : null)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-price">Price</Label>
+                  <Input
+                    id="edit-price"
+                    type="number"
+                    value={editingProduct.price}
+                    onChange={(e) => setEditingProduct(prev => prev ? { ...prev, price: parseFloat(e.target.value) } : null)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-stock">Stock Quantity</Label>
+                  <Input
+                    id="edit-stock"
+                    type="number"
+                    value={editingProduct.stockQuantity}
+                    onChange={(e) => setEditingProduct(prev => prev ? { ...prev, stockQuantity: parseInt(e.target.value) } : null)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-status">In Stock</Label>
+                  <Select 
+                    value={editingProduct.inStock.toString()} 
+                    onValueChange={(value) => setEditingProduct(prev => prev ? { ...prev, inStock: value === 'true' } : null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">In Stock</SelectItem>
+                      <SelectItem value="false">Out of Stock</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSaveProduct}>
+                    Save Changes
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
       </div>
     </>

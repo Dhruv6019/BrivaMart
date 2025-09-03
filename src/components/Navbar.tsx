@@ -72,6 +72,8 @@ const Navbar = () => {
             Home
           </Link>
           <Link to="/products" className="nav-link">Products</Link>
+          <Link to="/about" className="nav-link">About</Link>
+          <Link to="/contact" className="nav-link">Contact</Link>
           {isAdmin && (
             <Link to="/admin" className="nav-link">Admin</Link>
           )}
@@ -194,6 +196,26 @@ const Navbar = () => {
             }}
           >
             Products
+          </Link>
+          <Link 
+            to="/about" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            About
+          </Link>
+          <Link 
+            to="/contact" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Contact
           </Link>
           <Link 
             to="/cart" 

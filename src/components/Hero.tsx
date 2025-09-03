@@ -113,14 +113,14 @@ const Hero = () => {
               className="section-title text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in" 
               style={{ animationDelay: "0.3s" }}
             >
-              RoboMart: Future<br className="hidden sm:inline" />Technology Store
+              ShopMart: Your<br className="hidden sm:inline" />One-Stop Store
             </h1>
             
             <p 
               style={{ animationDelay: "0.5s" }} 
               className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-950 font-normal text-base sm:text-lg text-left"
             >
-              Discover cutting-edge robots and AI technology. From household assistants to industrial solutions.
+              Quality products for kitchen, hardware, gardening, home, and mobile accessories. Everything you need in one place.
             </p>
             
             <div 
