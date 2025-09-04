@@ -72,8 +72,11 @@ const Navbar = () => {
             Home
           </Link>
           <Link to="/products" className="nav-link">Products</Link>
+          <Link to="/categories" className="nav-link">Categories</Link>
           <Link to="/about" className="nav-link">About</Link>
           <Link to="/contact" className="nav-link">Contact</Link>
+          {user && <Link to="/wishlist" className="nav-link">Wishlist</Link>}
+          {user && <Link to="/orders" className="nav-link">Orders</Link>}
           {isAdmin && (
             <Link to="/admin" className="nav-link">Admin</Link>
           )}
@@ -101,13 +104,16 @@ const Navbar = () => {
             variant="ghost"
             size="icon"
             className="relative hidden md:inline-flex"
+            asChild
           >
-            <Heart className="w-5 h-5" />
-            {wishlistItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {wishlistItems.length}
-              </span>
-            )}
+            <Link to="/wishlist">
+              <Heart className="w-5 h-5" />
+              {wishlistItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
           </Button>
 
           {/* User Menu */}
@@ -198,6 +204,16 @@ const Navbar = () => {
             Products
           </Link>
           <Link 
+            to="/categories" 
+            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Categories
+          </Link>
+          <Link 
             to="/about" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
             onClick={() => {
@@ -217,6 +233,30 @@ const Navbar = () => {
           >
             Contact
           </Link>
+          {user && (
+            <Link 
+              to="/wishlist" 
+              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+              onClick={() => {
+                setIsMenuOpen(false);
+                document.body.style.overflow = '';
+              }}
+            >
+              Wishlist
+            </Link>
+          )}
+          {user && (
+            <Link 
+              to="/orders" 
+              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+              onClick={() => {
+                setIsMenuOpen(false);
+                document.body.style.overflow = '';
+              }}
+            >
+              Orders
+            </Link>
+          )}
           <Link 
             to="/cart" 
             className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
