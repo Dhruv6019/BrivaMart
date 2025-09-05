@@ -7,7 +7,8 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Badge } from '../components/ui/badge';
-import { Search, Filter, Grid, List } from 'lucide-react';
+import { ScrollArea } from '../components/ui/scroll-area';
+import { Search, Filter, Grid, List, ChefHat, Wrench, Scissors, Home, Smartphone } from 'lucide-react';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +16,14 @@ const Products = () => {
   const [sortBy, setSortBy] = useState<string>('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<string>('all');
+
+  const categoryIcons = {
+    'Kitchen Ware': ChefHat,
+    'Hardware': Wrench,
+    'Gardening Tools': Scissors,
+    'Home Ware': Home,
+    'Mobile Accessory': Smartphone,
+  };
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
@@ -74,35 +83,104 @@ const Products = () => {
       <Navbar />
       <div className="min-h-screen bg-background pt-20">
       {/* Header */}
-      <div className="bg-muted/30 py-12">
+      <div className="bg-muted/30 py-8 sm:py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center mb-4">Our Products</h1>
-          <p className="text-muted-foreground text-center max-w-2xl mx-auto">
+          <h1 className="text-2xl sm:text-4xl font-bold text-center mb-2 sm:mb-4">Our Products</h1>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto text-sm sm:text-base">
             Discover our complete range of cutting-edge robotic solutions
           </p>
         </div>
       </div>
 
-      {/* Categories */}
-      <section className="py-12">
+      {/* Mobile Categories - Horizontal Scroll */}
+      <section className="py-4 sm:py-8 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8">Shop by Category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.map((category) => (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                onClick={() => setSelectedCategory(category.name)}
-              />
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold">Browse by category</h2>
+            <Button variant="ghost" size="sm" className="text-primary text-sm">
+              See All
+            </Button>
+          </div>
+          
+          {/* Mobile horizontal scroll categories */}
+          <div className="block sm:hidden">
+            <ScrollArea className="w-full whitespace-nowrap">
+              <div className="flex space-x-4 pb-2">
+                <Button
+                  variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                  onClick={() => setSelectedCategory('all')}
+                  className="flex-shrink-0 rounded-full"
+                  size="sm"
+                >
+                  All
+                </Button>
+                {categories.map((category) => {
+                  const IconComponent = categoryIcons[category.name as keyof typeof categoryIcons] || Home;
+                  return (
+                    <Button
+                      key={category.id}
+                      variant={selectedCategory === category.name ? 'default' : 'outline'}
+                      onClick={() => setSelectedCategory(category.name)}
+                      className="flex-shrink-0 rounded-full flex items-center gap-2"
+                      size="sm"
+                    >
+                      <IconComponent className="h-4 w-4" />
+                      {category.name}
+                    </Button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
+
+          {/* Desktop/Tablet grid categories */}
+          <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {categories.map((category) => {
+              const IconComponent = categoryIcons[category.name as keyof typeof categoryIcons] || Home;
+              return (
+                <div
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.name)}
+                  className={`cursor-pointer p-4 rounded-xl border-2 transition-all hover:shadow-md ${
+                    selectedCategory === category.name 
+                      ? 'border-primary bg-primary/5' 
+                      : 'border-border bg-card hover:border-primary/50'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className={`w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center ${
+                      selectedCategory === category.name ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    }`}>
+                      <IconComponent className="h-6 w-6" />
+                    </div>
+                    <h3 className="font-medium text-sm mb-1">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground">{category.productCount} items</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Filters */}
-      <div className="container mx-auto px-4 mb-8">
-        <div className="bg-card p-6 rounded-lg shadow-sm">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
+      <div className="container mx-auto px-4 mb-4 sm:mb-8">
+        <div className="bg-card p-3 sm:p-6 rounded-lg shadow-sm">
+          {/* Mobile Search */}
+          <div className="block sm:hidden mb-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+
+          {/* Desktop Filters */}
+          <div className="hidden sm:flex flex-col lg:flex-row gap-4 items-center">
             {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -113,21 +191,6 @@ const Products = () => {
                 className="pl-10"
               />
             </div>
-
-            {/* Category Filter */}
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full lg:w-48">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
 
             {/* Price Range */}
             <Select value={priceRange} onValueChange={setPriceRange}>
@@ -175,36 +238,83 @@ const Products = () => {
             </div>
           </div>
 
-          {/* Active Filters */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            {searchTerm && (
-              <Badge variant="secondary" className="cursor-pointer" onClick={() => setSearchTerm('')}>
-                Search: {searchTerm} ×
-              </Badge>
-            )}
-            {selectedCategory !== 'all' && (
-              <Badge variant="secondary" className="cursor-pointer" onClick={() => setSelectedCategory('all')}>
-                Category: {selectedCategory} ×
-              </Badge>
-            )}
-            {priceRange !== 'all' && (
-              <Badge variant="secondary" className="cursor-pointer" onClick={() => setPriceRange('all')}>
-                Price: {priceRange.replace('-', ' - $').replace('k', ',000')} ×
-              </Badge>
-            )}
+          {/* Mobile Filter Row */}
+          <div className="flex sm:hidden gap-2 items-center">
+            <Select value={priceRange} onValueChange={setPriceRange}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Price" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Prices</SelectItem>
+                <SelectItem value="under-10k">Under $10k</SelectItem>
+                <SelectItem value="10k-25k">$10k - $25k</SelectItem>
+                <SelectItem value="over-25k">Over $25k</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="price-low">Price ↑</SelectItem>
+                <SelectItem value="price-high">Price ↓</SelectItem>
+                <SelectItem value="rating">Rating</SelectItem>
+                <SelectItem value="newest">Newest</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex gap-1">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
+
+          {/* Active Filters */}
+          {(searchTerm || selectedCategory !== 'all' || priceRange !== 'all') && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {searchTerm && (
+                <Badge variant="secondary" className="cursor-pointer" onClick={() => setSearchTerm('')}>
+                  Search: {searchTerm} ×
+                </Badge>
+              )}
+              {selectedCategory !== 'all' && (
+                <Badge variant="secondary" className="cursor-pointer" onClick={() => setSelectedCategory('all')}>
+                  {selectedCategory} ×
+                </Badge>
+              )}
+              {priceRange !== 'all' && (
+                <Badge variant="secondary" className="cursor-pointer" onClick={() => setPriceRange('all')}>
+                  {priceRange.replace('-', ' - $').replace('k', ',000')} ×
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Products */}
       <div className="container mx-auto px-4 pb-12">
-        <div className="flex justify-between items-center mb-6">
-          <p className="text-muted-foreground">
+        <div className="flex justify-between items-center mb-4 sm:mb-6">
+          <p className="text-muted-foreground text-sm sm:text-base">
             Showing {filteredProducts.length} of {products.length} products
           </p>
         </div>
         
-        <ProductGrid products={filteredProducts} />
+        <ProductGrid products={filteredProducts} viewMode={viewMode} />
       </div>
       </div>
     </>

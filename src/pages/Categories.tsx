@@ -29,19 +29,19 @@ const Categories = () => {
     <>
       <Navbar />
       <div className="min-h-screen bg-background pt-20">
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-6 sm:py-12">
           {/* Header */}
-          <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4">Product Categories</Badge>
-            <h1 className="text-4xl font-bold mb-6">Shop by Category</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="text-center mb-8 sm:mb-12">
+            <Badge variant="secondary" className="mb-3 sm:mb-4">Product Categories</Badge>
+            <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6">Shop by Category</h1>
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
               Discover our wide range of products across five main categories, 
               each carefully curated to meet your specific needs.
             </p>
           </div>
 
-          {/* Categories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Categories Grid - Mobile First */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {categories.map((category) => {
               const IconComponent = categoryIcons[category.name as keyof typeof categoryIcons] || Home;
               
@@ -52,29 +52,29 @@ const Categories = () => {
                       <img
                         src={category.image}
                         alt={category.name}
-                        className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute top-4 left-4">
-                        <div className="bg-white/90 p-3 rounded-full">
-                          <IconComponent className="h-6 w-6 text-primary" />
+                      <div className="absolute top-3 sm:top-4 left-3 sm:left-4">
+                        <div className="bg-white/90 p-2 sm:p-3 rounded-full">
+                          <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                         </div>
                       </div>
                     </div>
                     
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-xl font-bold">{category.name}</h3>
-                        <Badge variant="outline">
+                    <div className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
+                        <h3 className="text-lg sm:text-xl font-bold">{category.name}</h3>
+                        <Badge variant="outline" className="text-xs">
                           {category.productCount} products
                         </Badge>
                       </div>
                       
-                      <p className="text-muted-foreground mb-6 line-clamp-3">
+                      <p className="text-muted-foreground mb-4 sm:mb-6 line-clamp-3 text-sm sm:text-base">
                         {categoryDescriptions[category.name as keyof typeof categoryDescriptions]}
                       </p>
 
-                      <Button asChild className="w-full group">
+                      <Button asChild className="w-full group mb-3 sm:mb-4" size="sm">
                         <Link to={`/products?category=${encodeURIComponent(category.name)}`}>
                           Browse {category.name}
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -82,8 +82,8 @@ const Categories = () => {
                       </Button>
 
                       {/* Popular Items Preview */}
-                      <div className="mt-4 pt-4 border-t">
-                        <p className="text-sm font-medium text-muted-foreground mb-2">Popular items:</p>
+                      <div className="pt-3 sm:pt-4 border-t">
+                        <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-2">Popular items:</p>
                         <div className="flex flex-wrap gap-1">
                           {category.name === 'Kitchen Ware' && (
                             <>
@@ -130,19 +130,19 @@ const Categories = () => {
           </div>
 
           {/* Call to Action */}
-          <div className="text-center mt-16">
+          <div className="text-center mt-12 sm:mt-16">
             <Card className="bg-primary text-primary-foreground">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold mb-4">Can't Find What You're Looking For?</h2>
-                <p className="text-primary-foreground/80 mb-6 max-w-2xl mx-auto">
+              <CardContent className="p-6 sm:p-8">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Can't Find What You're Looking For?</h2>
+                <p className="text-primary-foreground/80 mb-4 sm:mb-6 max-w-2xl mx-auto text-sm sm:text-base">
                   Our team is here to help you find the perfect products for your needs. 
                   Contact us for personalized recommendations.
                 </p>
-                <div className="flex gap-4 justify-center">
-                  <Button variant="secondary" asChild>
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                  <Button variant="secondary" asChild size="sm">
                     <Link to="/contact">Contact Us</Link>
                   </Button>
-                  <Button variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
+                  <Button variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild size="sm">
                     <Link to="/products">View All Products</Link>
                   </Button>
                 </div>
