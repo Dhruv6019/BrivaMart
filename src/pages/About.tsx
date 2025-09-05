@@ -48,36 +48,36 @@ const About = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background pt-20">
-        <div className="container mx-auto px-4 py-12">
+      <div className="min-h-screen bg-background pt-16 md:pt-20">
+        <div className="container mx-auto px-4 py-6 md:py-12">
           {/* Hero Section */}
-          <div className="text-center mb-16">
-            <Badge variant="secondary" className="mb-4">About ShopMart</Badge>
-            <h1 className="text-4xl font-bold mb-6">Your Trusted Shopping Partner</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="text-center mb-8 md:mb-16">
+            <Badge variant="secondary" className="mb-3 md:mb-4">About ShopMart</Badge>
+            <h1 className="text-2xl md:text-4xl font-bold mb-4 md:mb-6">Your Trusted Shopping Partner</h1>
+            <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto">
               We've been serving customers for over 15 years, providing quality products across 
               Kitchen Ware, Hardware, Gardening Tools, Home Ware, and Mobile Accessories.
             </p>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-16">
             {stats.map((stat, index) => (
               <Card key={index} className="text-center">
-                <CardContent className="p-6">
-                  <stat.icon className="h-12 w-12 mx-auto mb-4 text-primary" />
-                  <h3 className="text-2xl font-bold mb-2">{stat.value}</h3>
-                  <p className="text-muted-foreground">{stat.label}</p>
+                <CardContent className="p-4 md:p-6">
+                  <stat.icon className="h-8 w-8 md:h-12 md:w-12 mx-auto mb-2 md:mb-4 text-primary" />
+                  <h3 className="text-lg md:text-2xl font-bold mb-1 md:mb-2">{stat.value}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           {/* Our Story */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12 mb-8 md:mb-16">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
-              <div className="space-y-4 text-muted-foreground">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Our Story</h2>
+              <div className="space-y-3 md:space-y-4 text-sm md:text-base text-muted-foreground">
                 <p>
                   Founded in 2009, ShopMart began as a small family business with a simple mission: 
                   to provide quality products at affordable prices. What started as a single store 
@@ -95,25 +95,25 @@ const About = () => {
                 </p>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative order-first lg:order-last">
               <img 
                 src="/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png" 
                 alt="Our Store" 
-                className="rounded-lg shadow-lg w-full h-96 object-cover"
+                className="rounded-lg shadow-lg w-full h-48 md:h-96 object-cover"
               />
             </div>
           </div>
 
           {/* Features */}
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-center mb-12">Why Choose ShopMart?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mb-8 md:mb-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-12">Why Choose ShopMart?</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {features.map((feature, index) => (
                 <Card key={index}>
-                  <CardContent className="p-6 text-center">
-                    <feature.icon className="h-12 w-12 mx-auto mb-4 text-primary" />
-                    <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                    <p className="text-muted-foreground">{feature.description}</p>
+                  <CardContent className="p-4 md:p-6 text-center">
+                    <feature.icon className="h-8 w-8 md:h-12 md:w-12 mx-auto mb-3 md:mb-4 text-primary" />
+                    <h3 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">{feature.title}</h3>
+                    <p className="text-sm md:text-base text-muted-foreground">{feature.description}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -121,12 +121,12 @@ const About = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
             <Card>
-              <CardContent className="p-6 text-center">
-                <MapPin className="h-8 w-8 mx-auto mb-3 text-primary" />
-                <h3 className="font-semibold mb-2">Address</h3>
-                <p className="text-muted-foreground text-sm">
+              <CardContent className="p-4 md:p-6 text-center">
+                <MapPin className="h-6 w-6 md:h-8 md:w-8 mx-auto mb-2 md:mb-3 text-primary" />
+                <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Address</h3>
+                <p className="text-muted-foreground text-xs md:text-sm">
                   123 Commerce Street<br />
                   Business District<br />
                   City, State 12345
@@ -135,10 +135,10 @@ const About = () => {
             </Card>
 
             <Card>
-              <CardContent className="p-6 text-center">
-                <Phone className="h-8 w-8 mx-auto mb-3 text-primary" />
-                <h3 className="font-semibold mb-2">Phone</h3>
-                <p className="text-muted-foreground text-sm">
+              <CardContent className="p-4 md:p-6 text-center">
+                <Phone className="h-6 w-6 md:h-8 md:w-8 mx-auto mb-2 md:mb-3 text-primary" />
+                <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Phone</h3>
+                <p className="text-muted-foreground text-xs md:text-sm">
                   +1 (555) 123-4567<br />
                   +1 (555) 987-6543
                 </p>
@@ -146,10 +146,10 @@ const About = () => {
             </Card>
 
             <Card>
-              <CardContent className="p-6 text-center">
-                <Mail className="h-8 w-8 mx-auto mb-3 text-primary" />
-                <h3 className="font-semibold mb-2">Email</h3>
-                <p className="text-muted-foreground text-sm">
+              <CardContent className="p-4 md:p-6 text-center">
+                <Mail className="h-6 w-6 md:h-8 md:w-8 mx-auto mb-2 md:mb-3 text-primary" />
+                <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Email</h3>
+                <p className="text-muted-foreground text-xs md:text-sm">
                   info@shopmart.com<br />
                   support@shopmart.com
                 </p>
@@ -157,10 +157,10 @@ const About = () => {
             </Card>
 
             <Card>
-              <CardContent className="p-6 text-center">
-                <Clock className="h-8 w-8 mx-auto mb-3 text-primary" />
-                <h3 className="font-semibold mb-2">Hours</h3>
-                <p className="text-muted-foreground text-sm">
+              <CardContent className="p-4 md:p-6 text-center">
+                <Clock className="h-6 w-6 md:h-8 md:w-8 mx-auto mb-2 md:mb-3 text-primary" />
+                <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">Hours</h3>
+                <p className="text-muted-foreground text-xs md:text-sm">
                   Mon-Fri: 9:00 AM - 8:00 PM<br />
                   Sat-Sun: 10:00 AM - 6:00 PM
                 </p>

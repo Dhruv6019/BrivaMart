@@ -103,37 +103,37 @@ const Contact = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-background pt-20">
-        <div className="container mx-auto px-4 py-12">
+      <div className="min-h-screen bg-background pt-16 md:pt-20">
+        <div className="container mx-auto px-4 py-6 md:py-12">
           {/* Header */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <div className="text-center mb-8 md:mb-12">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">Contact Us</h1>
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
               Have a question or need help? We're here to assist you. 
               Reach out to us and we'll respond as soon as possible.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
             {/* Contact Information */}
-            <div className="lg:col-span-1">
-              <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
-              <div className="space-y-6">
+            <div className="lg:col-span-1 order-last lg:order-first">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Get in Touch</h2>
+              <div className="space-y-4 md:space-y-6">
                 {contactInfo.map((info, index) => (
                   <Card key={index}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="bg-primary/10 p-3 rounded-lg">
-                          <info.icon className="h-6 w-6 text-primary" />
+                    <CardContent className="p-4 md:p-6">
+                      <div className="flex items-start space-x-3 md:space-x-4">
+                        <div className="bg-primary/10 p-2 md:p-3 rounded-lg flex-shrink-0">
+                          <info.icon className="h-4 w-4 md:h-6 md:w-6 text-primary" />
                         </div>
-                        <div className="flex-1">
-                          <h3 className="font-semibold mb-2">{info.title}</h3>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold mb-1 md:mb-2 text-sm md:text-base">{info.title}</h3>
                           {info.details.map((detail, idx) => (
-                            <p key={idx} className="text-muted-foreground text-sm">
+                            <p key={idx} className="text-muted-foreground text-xs md:text-sm">
                               {detail}
                             </p>
                           ))}
-                          <p className="text-xs text-muted-foreground mt-2">
+                          <p className="text-xs text-muted-foreground mt-1 md:mt-2">
                             {info.description}
                           </p>
                         </div>
@@ -148,40 +148,42 @@ const Contact = () => {
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Send us a Message</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">Send us a Message</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                       <div>
-                        <Label htmlFor="name">Full Name *</Label>
+                        <Label htmlFor="name" className="text-sm">Full Name *</Label>
                         <Input
                           id="name"
                           type="text"
                           value={formData.name}
                           onChange={(e) => handleInputChange('name', e.target.value)}
                           placeholder="Enter your full name"
+                          className="h-10"
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="email">Email Address *</Label>
+                        <Label htmlFor="email" className="text-sm">Email Address *</Label>
                         <Input
                           id="email"
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleInputChange('email', e.target.value)}
                           placeholder="Enter your email"
+                          className="h-10"
                           required
                         />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                       <div>
-                        <Label htmlFor="category">Category</Label>
+                        <Label htmlFor="category" className="text-sm">Category</Label>
                         <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-10">
                             <SelectValue placeholder="Select category" />
                           </SelectTrigger>
                           <SelectContent>
@@ -197,33 +199,36 @@ const Contact = () => {
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="subject">Subject</Label>
+                        <Label htmlFor="subject" className="text-sm">Subject</Label>
                         <Input
                           id="subject"
                           type="text"
                           value={formData.subject}
                           onChange={(e) => handleInputChange('subject', e.target.value)}
                           placeholder="Brief subject of your message"
+                          className="h-10"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="message">Message *</Label>
+                      <Label htmlFor="message" className="text-sm">Message *</Label>
                       <Textarea
                         id="message"
                         value={formData.message}
                         onChange={(e) => handleInputChange('message', e.target.value)}
                         placeholder="Please describe your inquiry in detail..."
-                        rows={6}
+                        rows={4}
+                        className="resize-none"
                         required
                       />
                     </div>
 
                     <Button 
                       type="submit" 
-                      className="w-full md:w-auto"
+                      className="w-full"
                       disabled={isSubmitting}
+                      size="lg"
                     >
                       {isSubmitting ? (
                         <>
@@ -242,15 +247,15 @@ const Contact = () => {
               </Card>
 
               {/* FAQ Quick Links */}
-              <Card className="mt-6">
+              <Card className="mt-4 md:mt-6">
                 <CardHeader>
-                  <CardTitle>Quick Help</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">Quick Help</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <h4 className="font-semibold">Common Questions:</h4>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                      <h4 className="font-semibold text-sm md:text-base">Common Questions:</h4>
+                      <ul className="text-xs md:text-sm text-muted-foreground space-y-1">
                         <li>• How to track my order?</li>
                         <li>• What's your return policy?</li>
                         <li>• Shipping and delivery information</li>
@@ -258,14 +263,14 @@ const Contact = () => {
                       </ul>
                     </div>
                     <div className="space-y-2">
-                      <h4 className="font-semibold">Quick Actions:</h4>
+                      <h4 className="font-semibold text-sm md:text-base">Quick Actions:</h4>
                       <div className="space-y-2">
-                        <Button variant="outline" size="sm" className="w-full justify-start">
-                          <Phone className="h-4 w-4 mr-2" />
+                        <Button variant="outline" size="sm" className="w-full justify-start text-xs md:text-sm h-8 md:h-9">
+                          <Phone className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                           Request Callback
                         </Button>
-                        <Button variant="outline" size="sm" className="w-full justify-start">
-                          <MessageCircle className="h-4 w-4 mr-2" />
+                        <Button variant="outline" size="sm" className="w-full justify-start text-xs md:text-sm h-8 md:h-9">
+                          <MessageCircle className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                           Live Chat Support
                         </Button>
                       </div>
