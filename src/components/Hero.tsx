@@ -3,10 +3,19 @@ import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import LottieAnimation from "./LottieAnimation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+  const heroImageRef = useRef<HTMLDivElement>(null);
   const [lottieData, setLottieData] = useState<any>(null);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -68,22 +77,79 @@ const Hero = () => {
   }, [isMobile]);
   
   useEffect(() => {
-    // Skip parallax on mobile
-    if (isMobile) return;
-    
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const elements = document.querySelectorAll('.parallax');
-      elements.forEach(el => {
-        const element = el as HTMLElement;
-        const speed = parseFloat(element.dataset.speed || '0.1');
-        const yPos = -scrollY * speed;
-        element.style.setProperty('--parallax-y', `${yPos}px`);
+    // GSAP animations for hero elements
+    const ctx = gsap.context(() => {
+      // Set initial states
+      gsap.set([chipRef.current, titleRef.current, subtitleRef.current, buttonRef.current], {
+        opacity: 0,
+        y: 50
       });
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+      gsap.set(heroImageRef.current, {
+        opacity: 0,
+        x: 100,
+        scale: 0.8
+      });
+
+      // Animate elements with stagger
+      const tl = gsap.timeline();
+      
+      tl.to(chipRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      })
+      .to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out"
+      }, "-=0.6")
+      .to(subtitleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.5")
+      .to(buttonRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power3.out"
+      }, "-=0.4")
+      .to(heroImageRef.current, {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        duration: 1.2,
+        ease: "power3.out"
+      }, "-=0.8");
+
+      // Parallax effect for background elements
+      gsap.to(".hero-bg-element", {
+        y: (i, el) => -ScrollTrigger.maxScroll(window) * parseFloat(el.getAttribute('data-speed') || '0.1'),
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+
+      // Continuous floating animation for hero image
+      if (heroImageRef.current) {
+        gsap.to(heroImageRef.current, {
+          y: -20,
+          duration: 3,
+          ease: "power2.inOut",
+          yoyo: true,
+          repeat: -1
+        });
+      }
+    }, containerRef);
+
+    return () => ctx.revert();
   }, [isMobile]);
   
   return (
@@ -102,30 +168,30 @@ const Hero = () => {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 items-center">
           <div className="w-full lg:w-1/2">
             <div 
-              className="pulse-chip mb-3 sm:mb-6 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.1s" }}
+              ref={chipRef}
+              className="pulse-chip mb-3 sm:mb-6"
             >
               <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-pulse-500 text-white mr-2">01</span>
               <span>Purpose</span>
             </div>
             
             <h1 
-              className="section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.3s" }}
+              ref={titleRef}
+              className="section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight"
             >
               ShopMart: Your<br className="hidden sm:inline" />One-Stop Store
             </h1>
             
             <p 
-              style={{ animationDelay: "0.5s" }} 
-              className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-700 font-normal text-sm sm:text-base md:text-lg text-left"
+              ref={subtitleRef}
+              className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed text-gray-700 font-normal text-sm sm:text-base md:text-lg text-left"
             >
               Quality products for kitchen ware, hardware, gardening tools, home ware, and mobile accessories. Everything you need in one place with fast delivery.
             </p>
             
             <div 
-              className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-in" 
-              style={{ animationDelay: "0.7s" }}
+              ref={buttonRef}
+              className="flex flex-col sm:flex-row gap-4"
             >
               <a 
                 href="#featured-products" 
@@ -149,9 +215,9 @@ const Hero = () => {
             </div>
           </div>
           
-          <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0">
+          <div className="w-full lg:w-1/2 relative mt-6 lg:mt-0" ref={heroImageRef}>
             {lottieData ? (
-              <div className="relative z-10 animate-fade-in" style={{ animationDelay: "0.9s" }}>
+              <div className="relative z-10">
                 <LottieAnimation 
                   animationPath={lottieData} 
                   className="w-full h-auto max-w-lg mx-auto"
@@ -166,7 +232,7 @@ const Hero = () => {
                 <img 
                   ref={imageRef} 
                   src="/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png" 
-                  alt="Atlas Robot" 
+                  alt="ShopMart Product Collection" 
                   className="w-full h-auto object-cover transition-transform duration-500 ease-out" 
                   style={{ transformStyle: 'preserve-3d' }} 
                 />
@@ -178,7 +244,7 @@ const Hero = () => {
         </div>
       </div>
       
-      <div className="hidden lg:block absolute bottom-0 left-1/4 w-64 h-64 bg-pulse-100/30 rounded-full blur-3xl -z-10 parallax" data-speed="0.05"></div>
+      <div className="hidden lg:block absolute bottom-0 left-1/4 w-64 h-64 bg-pulse-100/30 rounded-full blur-3xl -z-10 hero-bg-element" data-speed="0.05"></div>
     </section>
   );
 };

@@ -12,26 +12,9 @@ import Footer from "@/components/Footer";
 import { CartProvider } from "../contexts/CartContext";
 
 const Index = () => {
-  // Initialize intersection observer to detect when elements enter viewport
+  // GSAP-powered smooth scroll setup
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-fade-in");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    
-    const elements = document.querySelectorAll(".animate-on-scroll");
-    elements.forEach((el) => observer.observe(el));
-    
-    return () => {
-      elements.forEach((el) => observer.unobserve(el));
-    };
+    // Smooth scroll is now handled by GSAP ScrollTrigger
   }, []);
 
   useEffect(() => {

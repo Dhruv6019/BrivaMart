@@ -136,7 +136,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView, viewMod
   }
 
   return (
-    <div className="group relative bg-card rounded-lg sm:rounded-2xl shadow-elegant hover:shadow-elegant-hover transition-all duration-300 overflow-hidden">
+    <div className="product-card group relative bg-card rounded-lg sm:rounded-2xl shadow-elegant hover:shadow-elegant-hover transition-all duration-300 overflow-hidden">
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-gray-50">
         <img
