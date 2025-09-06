@@ -139,19 +139,19 @@
   }
 
   .pulse-chip {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pulse-100 text-pulse-600 border border-pulse-200;
+    @apply inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-pulse-100 text-pulse-600 border border-pulse-200;
   }
   
   .section-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12;
+    @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight;
   }
 
   .section-subtitle {
-    @apply text-lg md:text-xl text-gray-600 mt-4 max-w-3xl;
+    @apply text-base sm:text-lg md:text-xl text-gray-600 mt-3 sm:mt-4 max-w-3xl;
   }
 
   .glass-card {
@@ -163,11 +163,11 @@
   }
   
   .button-primary {
-    @apply bg-pulse-500 hover:bg-pulse-600 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-pulse-500 hover:bg-pulse-600 text-white font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-full transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98];
   }
 
   .button-secondary {
-    @apply bg-transparent border border-gray-300 hover:border-pulse-500 text-gray-800 hover:text-pulse-500 font-medium py-3 px-6 rounded-full transition-all duration-300;
+    @apply bg-transparent border border-gray-300 hover:border-pulse-500 text-gray-800 hover:text-pulse-500 font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-full transition-all duration-300;
   }
   
   .nav-link {
@@ -220,4 +220,53 @@
 .parallax {
   transform: translateY(var(--parallax-y, 0));
   transition: transform 0.1s ease-out;
+}
+
+/* Mobile-specific enhancements */
+@media (max-width: 768px) {
+  /* Disable parallax on mobile for performance */
+  .parallax {
+    transform: none !important;
+  }
+  
+  /* Touch-friendly button sizing */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improved spacing for mobile */
+  .mobile-spacing {
+    padding: 1rem 0.75rem;
+  }
+  
+  /* Better mobile typography */
+  .mobile-text {
+    line-height: 1.6;
+    letter-spacing: 0.025em;
+  }
+  
+  /* Prevent zoom on form inputs */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Smooth scrolling for mobile */
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Enhanced mobile interactions */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .group:hover .group-hover\:scale-105 {
+    transform: none;
+  }
+  
+  /* Better touch feedback */
+  .touch-feedback:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
 }

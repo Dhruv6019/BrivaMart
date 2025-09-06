@@ -3,216 +3,269 @@ import { Product, Category, Review } from '../types';
 export const categories: Category[] = [
   {
     id: '1',
-    name: 'Smart Robots',
-    slug: 'smart-robots',
+    name: 'Kitchen Ware',
+    slug: 'kitchen-ware',
     image: '/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png',
-    description: 'Advanced AI-powered robotic companions',
-    productCount: 12
+    description: 'Premium kitchen tools and appliances for cooking',
+    productCount: 15
   },
   {
     id: '2',
-    name: 'Home Automation',
-    slug: 'home-automation',
+    name: 'Hardware',
+    slug: 'hardware',
     image: '/lovable-uploads/c3d5522b-6886-4b75-8ffc-d020016bb9c2.png',
-    description: 'Smart home devices and systems',
-    productCount: 24
+    description: 'Professional tools and hardware solutions',
+    productCount: 28
   },
   {
     id: '3',
-    name: 'AI Assistants',
-    slug: 'ai-assistants',
+    name: 'Gardening Tools',
+    slug: 'gardening-tools',
     image: '/lovable-uploads/22d31f51-c174-40a7-bd95-00e4ad00eaf3.png',
-    description: 'Intelligent personal and business assistants',
-    productCount: 8
+    description: 'Essential tools for garden and outdoor care',
+    productCount: 18
   },
   {
     id: '4',
-    name: 'Healthcare Robots',
-    slug: 'healthcare-robots',
+    name: 'Home Ware',
+    slug: 'home-ware',
     image: '/lovable-uploads/af412c03-21e4-4856-82ff-d1a975dc84a9.png',
-    description: 'Medical and healthcare robotic solutions',
-    productCount: 6
+    description: 'Comfort and style for your living space',
+    productCount: 22
+  },
+  {
+    id: '5',
+    name: 'Mobile Accessory',
+    slug: 'mobile-accessory',
+    image: '/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png',
+    description: 'Latest accessories for your mobile devices',
+    productCount: 12
   }
 ];
 
 export const products: Product[] = [
   {
     id: '1',
-    name: 'Atlas Pro Humanoid Robot',
-    description: 'The ultimate AI companion featuring advanced natural language processing, precise movement capabilities, and adaptive learning algorithms. Perfect for home assistance and professional environments.',
-    price: 24999,
-    originalPrice: 29999,
+    name: 'Professional Chef Knife Set',
+    description: 'Premium stainless steel knife set with ergonomic handles. Includes chef\'s knife, paring knife, bread knife, and utility knife. Perfect for home and professional cooking.',
+    price: 89,
+    originalPrice: 129,
     images: [
       '/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png',
       '/lovable-uploads/c3d5522b-6886-4b75-8ffc-d020016bb9c2.png'
     ],
-    category: 'Smart Robots',
-    subcategory: 'Humanoid',
-    brand: 'Atlas Robotics',
+    category: 'Kitchen Ware',
+    subcategory: 'Knives',
+    brand: 'ChefMaster',
     rating: 4.8,
     reviewCount: 127,
     inStock: true,
     stockQuantity: 15,
     lowStockAlert: 5,
     specifications: {
-      'Height': '5.8 feet',
-      'Weight': '180 lbs',
-      'Battery Life': '12 hours',
-      'AI Processing': 'Advanced Neural Network',
-      'Sensors': '50+ Environmental Sensors',
-      'Connectivity': 'WiFi 6, Bluetooth 5.2, 5G'
+      'Material': 'German Stainless Steel',
+      'Handle': 'Ergonomic Polymer',
+      'Set Size': '4 Pieces',
+      'Warranty': '5 Years',
+      'Dishwasher Safe': 'Yes'
     },
     variants: [
       {
         id: 'v1',
         name: 'Color',
         type: 'color',
-        value: 'Orange & White',
+        value: 'Black Handle',
         stockQuantity: 10
       },
       {
         id: 'v2',
         name: 'Color',
         type: 'color',
-        value: 'Blue & Silver',
+        value: 'Wood Handle',
         stockQuantity: 5
       }
     ],
-    tags: ['AI', 'Humanoid', 'Smart Home', 'Assistant'],
+    tags: ['Kitchen', 'Knives', 'Professional', 'Cooking'],
     featured: true,
     isNew: false,
     onSale: true
   },
   {
     id: '2',
-    name: 'Companion Care Robot',
-    description: 'Specialized healthcare assistant robot designed for elderly care and medical support. Features health monitoring, medication reminders, and emergency response capabilities.',
-    price: 18999,
+    name: 'Cordless Power Drill',
+    description: 'Heavy-duty cordless drill with lithium-ion battery. Features 20V motor, LED work light, and 15 clutch settings. Includes carrying case and accessories.',
+    price: 159,
     images: [
       '/lovable-uploads/af412c03-21e4-4856-82ff-d1a975dc84a9.png'
     ],
-    category: 'Healthcare Robots',
-    subcategory: 'Care Assistant',
-    brand: 'MediBot',
-    rating: 4.9,
+    category: 'Hardware',
+    subcategory: 'Power Tools',
+    brand: 'PowerPro',
+    rating: 4.7,
     reviewCount: 89,
     inStock: true,
-    stockQuantity: 8,
+    stockQuantity: 12,
     lowStockAlert: 3,
     specifications: {
-      'Height': '4.5 feet',
-      'Weight': '120 lbs',
-      'Battery Life': '16 hours',
-      'Medical Sensors': 'Heart Rate, Blood Pressure, Temperature',
-      'Emergency Features': 'Fall Detection, Emergency Calling'
+      'Voltage': '20V MAX',
+      'Chuck Size': '1/2 inch',
+      'Battery': 'Lithium-Ion',
+      'LED Light': 'Yes',
+      'Case Included': 'Yes'
     },
     variants: [
       {
         id: 'v3',
-        name: 'Configuration',
+        name: 'Battery',
         type: 'style',
-        value: 'Standard',
-        stockQuantity: 5
+        value: '1 Battery',
+        stockQuantity: 8
       },
       {
         id: 'v4',
-        name: 'Configuration',
+        name: 'Battery',
         type: 'style',
-        value: 'Advanced Medical',
-        price: 21999,
-        stockQuantity: 3
+        value: '2 Batteries',
+        price: 199,
+        stockQuantity: 4
       }
     ],
-    tags: ['Healthcare', 'Elderly Care', 'Medical', 'Emergency'],
+    tags: ['Tools', 'Cordless', 'DIY', 'Construction'],
     featured: true,
-    isNew: true,
+    isNew: false,
     onSale: false
   },
   {
     id: '3',
-    name: 'Smart Home Hub Robot',
-    description: 'Central command robot for your smart home ecosystem. Controls all connected devices, provides security monitoring, and offers voice-activated assistance throughout your home.',
-    price: 12999,
+    name: 'Garden Tool Set',
+    description: 'Complete 5-piece garden tool set with stainless steel heads and comfortable grip handles. Includes trowel, weeder, cultivator, transplanter, and pruning shears.',
+    price: 49,
     images: [
       '/lovable-uploads/22d31f51-c174-40a7-bd95-00e4ad00eaf3.png'
     ],
-    category: 'Home Automation',
-    subcategory: 'Hub',
-    brand: 'SmartHome Co',
+    category: 'Gardening Tools',
+    subcategory: 'Hand Tools',
+    brand: 'GreenThumb',
     rating: 4.6,
     reviewCount: 203,
     inStock: true,
     stockQuantity: 25,
     lowStockAlert: 10,
     specifications: {
-      'Compatibility': 'All major smart home brands',
-      'Voice Commands': '500+ supported commands',
-      'Security Features': '360° camera, motion detection',
-      'Range': 'Whole home coverage'
+      'Material': 'Stainless Steel',
+      'Handle': 'Ergonomic Grip',
+      'Set Size': '5 Pieces',
+      'Rust Resistant': 'Yes',
+      'Storage Bag': 'Included'
     },
     variants: [
       {
         id: 'v5',
-        name: 'Package',
+        name: 'Size',
         type: 'style',
-        value: 'Basic',
+        value: 'Standard',
         stockQuantity: 15
       },
       {
         id: 'v6',
-        name: 'Package',
+        name: 'Size',
         type: 'style',
-        value: 'Professional',
-        price: 15999,
+        value: 'Compact',
+        price: 39,
         stockQuantity: 10
       }
     ],
-    tags: ['Smart Home', 'Security', 'Voice Control', 'Automation'],
+    tags: ['Garden', 'Tools', 'Outdoor', 'Planting'],
     featured: false,
     isNew: false,
     onSale: false
   },
   {
     id: '4',
-    name: 'Industrial Assistant Robot',
-    description: 'Heavy-duty robot designed for industrial and commercial applications. Features advanced lifting capabilities, precision tasks, and workplace safety protocols.',
-    price: 45999,
+    name: 'Luxury Cotton Bed Sheets',
+    description: 'Ultra-soft 100% cotton bed sheet set. Deep pocket fitted sheet fits mattresses up to 18 inches. Available in queen and king sizes with matching pillowcases.',
+    price: 79,
     images: [
-      '/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png'
+      '/lovable-uploads/af412c03-21e4-4856-82ff-d1a975dc84a9.png'
     ],
-    category: 'Smart Robots',
-    subcategory: 'Industrial',
-    brand: 'RoboTech Industries',
-    rating: 4.7,
-    reviewCount: 45,
+    category: 'Home Ware',
+    subcategory: 'Bedding',
+    brand: 'ComfortHome',
+    rating: 4.5,
+    reviewCount: 156,
     inStock: true,
-    stockQuantity: 3,
-    lowStockAlert: 2,
+    stockQuantity: 18,
+    lowStockAlert: 5,
     specifications: {
-      'Lifting Capacity': '500 lbs',
-      'Operating Temperature': '-20°C to 60°C',
-      'Precision': '±0.1mm',
-      'Safety Certifications': 'ISO 10218, ANSI/RIA R15.06'
+      'Material': '100% Cotton',
+      'Thread Count': '400TC',
+      'Deep Pocket': '18 inches',
+      'Care': 'Machine Washable',
+      'Set Includes': 'Fitted, Flat, 2 Pillowcases'
     },
     variants: [
       {
         id: 'v7',
-        name: 'Configuration',
+        name: 'Size',
         type: 'style',
-        value: 'Standard',
-        stockQuantity: 2
+        value: 'Queen',
+        stockQuantity: 10
       },
       {
         id: 'v8',
-        name: 'Configuration',
+        name: 'Size',
         type: 'style',
-        value: 'Heavy Duty',
-        price: 52999,
-        stockQuantity: 1
+        value: 'King',
+        price: 89,
+        stockQuantity: 8
       }
     ],
-    tags: ['Industrial', 'Heavy Duty', 'Precision', 'Safety'],
+    tags: ['Bedding', 'Cotton', 'Comfort', 'Sleep'],
     featured: false,
+    isNew: true,
+    onSale: false
+  },
+  {
+    id: '5',
+    name: 'Wireless Charging Stand',
+    description: 'Fast wireless charging stand compatible with all Qi-enabled devices. Features adjustable viewing angle, LED charging indicator, and built-in cooling fan.',
+    price: 35,
+    images: [
+      '/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png'
+    ],
+    category: 'Mobile Accessory',
+    subcategory: 'Chargers',
+    brand: 'TechCharge',
+    rating: 4.4,
+    reviewCount: 92,
+    inStock: true,
+    stockQuantity: 30,
+    lowStockAlert: 10,
+    specifications: {
+      'Charging Speed': '15W Fast Charge',
+      'Compatibility': 'Qi-Enabled Devices',
+      'LED Indicator': 'Yes',
+      'Cooling Fan': 'Built-in',
+      'Cable Length': '4 feet'
+    },
+    variants: [
+      {
+        id: 'v9',
+        name: 'Color',
+        type: 'color',
+        value: 'Black',
+        stockQuantity: 20
+      },
+      {
+        id: 'v10',
+        name: 'Color',
+        type: 'color',
+        value: 'White',
+        stockQuantity: 10
+      }
+    ],
+    tags: ['Wireless', 'Charging', 'Mobile', 'Tech'],
+    featured: true,
     isNew: true,
     onSale: false
   }

@@ -110,7 +110,7 @@ const Hero = () => {
             </div>
             
             <h1 
-              className="section-title text-3xl sm:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in" 
+              className="section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-tight opacity-0 animate-fade-in" 
               style={{ animationDelay: "0.3s" }}
             >
               ShopMart: Your<br className="hidden sm:inline" />One-Stop Store
@@ -118,9 +118,9 @@ const Hero = () => {
             
             <p 
               style={{ animationDelay: "0.5s" }} 
-              className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-950 font-normal text-base sm:text-lg text-left"
+              className="section-subtitle mt-3 sm:mt-6 mb-4 sm:mb-8 leading-relaxed opacity-0 animate-fade-in text-gray-700 font-normal text-sm sm:text-base md:text-lg text-left"
             >
-              Quality products for kitchen, hardware, gardening, home, and mobile accessories. Everything you need in one place.
+              Quality products for kitchen ware, hardware, gardening tools, home ware, and mobile accessories. Everything you need in one place with fast delivery.
             </p>
             
             <div 
@@ -129,7 +129,7 @@ const Hero = () => {
             >
               <a 
                 href="#featured-products" 
-                className="flex items-center justify-center group w-full sm:w-auto text-center" 
+                className="flex items-center justify-center group w-full sm:w-auto text-center touch-target touch-feedback" 
                 style={{
                   backgroundColor: '#FE5C02',
                   borderRadius: '1440px',
@@ -138,8 +138,9 @@ const Hero = () => {
                   cursor: 'pointer',
                   fontSize: '14px',
                   lineHeight: '20px',
-                  padding: '16px 24px',
+                  padding: '12px 20px',
                   border: '1px solid white',
+                  minHeight: '44px',
                 }}
               >
                 Shop Now

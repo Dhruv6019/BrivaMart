@@ -5,13 +5,13 @@ const ImageShowcaseSection = () => {
   return (
     <section className="w-full pt-0 pb-8 sm:pb-12 bg-white" id="showcase">
       <div className="container px-4 sm:px-6 lg:px-8 mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 animate-on-scroll">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-gray-900 mb-3 sm:mb-4">
-            Transform Your World with AI
+        <div className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 md:mb-12 animate-on-scroll">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold tracking-tight text-gray-900 mb-3 sm:mb-4">
+            Quality Products for Every Need
           </h2>
-          <p className="text-base sm:text-lg text-gray-600">
-            Discover how our advanced robotics solutions are revolutionizing industries
-            and enhancing everyday life across the globe.
+          <p className="text-sm sm:text-base md:text-lg text-gray-600">
+            From kitchen essentials to mobile accessories, discover products that enhance
+            your daily life with quality and reliability you can trust.
           </p>
         </div>
         
@@ -23,12 +23,12 @@ const ImageShowcaseSection = () => {
               className="w-full h-auto object-cover"
             />
           </div>
-          <div className="bg-white p-4 sm:p-8">
-            <h3 className="text-xl sm:text-2xl font-display font-semibold mb-3 sm:mb-4">Innovation at Your Service</h3>
-            <p className="text-gray-700 text-sm sm:text-base">
-              From household assistants to industrial automation, our robotics catalog
-              offers solutions for every need. Trusted by thousands of customers worldwide
-              for reliability, innovation, and exceptional performance.
+          <div className="bg-white p-3 sm:p-4 md:p-6 lg:p-8">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-display font-semibold mb-2 sm:mb-3 md:mb-4">Quality at Your Fingertips</h3>
+            <p className="text-gray-700 text-xs sm:text-sm md:text-base">
+              From kitchen essentials to mobile accessories, our comprehensive catalog
+              offers quality products for every aspect of your life. Trusted by thousands of customers worldwide
+              for reliability, value, and exceptional service.
             </p>
           </div>
         </div>

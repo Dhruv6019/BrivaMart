@@ -10,7 +10,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
   return (
     <div
       onClick={() => onClick?.(category)}
-      className="group cursor-pointer bg-white rounded-2xl shadow-elegant hover:shadow-elegant-hover transition-all duration-300 overflow-hidden"
+      className="group cursor-pointer bg-white rounded-lg sm:rounded-xl lg:rounded-2xl shadow-elegant hover:shadow-elegant-hover transition-all duration-300 overflow-hidden"
     >
       <div className="aspect-square overflow-hidden bg-gray-50">
         <img
@@ -19,19 +19,19 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, onClick }) => {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+      <div className="p-3 sm:p-4 lg:p-6">
+        <h3 className="text-sm sm:text-base lg:text-xl font-semibold mb-1 sm:mb-2 group-hover:text-primary transition-colors line-clamp-1">
           {category.name}
         </h3>
-        <p className="text-muted-foreground text-sm mb-3">
+        <p className="text-muted-foreground text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2">
           {category.description}
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            {category.productCount} products
+          <span className="text-xs sm:text-sm text-muted-foreground">
+            {category.productCount} items
           </span>
-          <span className="text-primary font-medium group-hover:underline">
-            Explore →
+          <span className="text-primary font-medium group-hover:underline text-xs sm:text-sm">
+            Shop →
           </span>
         </div>
       </div>
