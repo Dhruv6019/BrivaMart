@@ -6,9 +6,28 @@ import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Package, Truck, CheckCircle, Clock, RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 
 const OrderHistory = () => {
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const handleTrackOrder = (orderId: string) => {
+    toast.info(`Tracking order ${orderId}`, {
+      description: "Redirecting to tracking page..."
+    });
+    // In a real app, this would navigate to a tracking page
+    setTimeout(() => {
+      window.open(`/track-order/${orderId}`, '_blank');
+    }, 1000);
+  };
+
+  const handleViewDetails = (orderId: string) => {
+    toast.info(`Loading order details for ${orderId}`);
+    // In a real app, this would navigate to order details page
+    setTimeout(() => {
+      window.location.href = `/order-details/${orderId}`;
+    }, 500);
+  };
 
   // Mock order data
   const orders = [
@@ -161,18 +180,22 @@ const OrderHistory = () => {
                       ))}
                     </div>
                     
-                    <div className="flex gap-2 mt-4 pt-4 border-t">
-                      <Button variant="outline" size="sm">
+                    <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t sm:flex-nowrap">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 sm:flex-none"
+                        onClick={() => handleTrackOrder(order.id)}
+                      >
                         <Package className="h-4 w-4 mr-2" />
                         Track Order
                       </Button>
-                      {order.status === 'delivered' && (
-                        <Button variant="outline" size="sm">
-                          <RotateCcw className="h-4 w-4 mr-2" />
-                          Return Items
-                        </Button>
-                      )}
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="flex-1 sm:flex-none"
+                        onClick={() => handleViewDetails(order.id)}
+                      >
                         View Details
                       </Button>
                     </div>
