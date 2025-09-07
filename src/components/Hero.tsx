@@ -35,7 +35,10 @@ const Hero = () => {
     fetch('/loop-header.lottie')
       .then(response => response.json())
       .then(data => setLottieData(data))
-      .catch(error => console.error("Error loading Lottie animation:", error));
+      .catch(error => {
+        console.error("Error loading Lottie animation:", error);
+        setLottieData(null); // Ensure we fall back to the image
+      });
   }, []);
 
   useEffect(() => {
