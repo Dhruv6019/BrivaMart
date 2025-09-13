@@ -19,6 +19,7 @@ import Categories from "./pages/Categories";
 import Wishlist from "./pages/Wishlist";
 import OrderHistory from "./pages/OrderHistory";
 import NotFound from "./pages/NotFound";
+import SecurityDashboard from "./pages/SecurityDashboard";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,14 @@ const App = () => (
               <Route path="/login" element={<Login />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route 
+                path="/security" 
+                element={
+                  <ProtectedRoute>
+                    <SecurityDashboard />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/checkout" 
                 element={

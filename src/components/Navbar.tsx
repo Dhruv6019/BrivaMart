@@ -145,6 +145,12 @@ const Navbar = () => {
                     Profile
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/security">
+                    <Shield className="mr-2 h-4 w-4" />
+                    Security
+                  </Link>
+                </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem asChild>
                     <Link to="/admin">
@@ -286,6 +292,16 @@ const Navbar = () => {
                 }}
               >
                 Profile
+              </Link>
+              <Link 
+                to="/security" 
+                className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  document.body.style.overflow = '';
+                }}
+              >
+                Security
               </Link>
               {isAdmin && (
                 <Link 

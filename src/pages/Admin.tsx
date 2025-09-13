@@ -25,9 +25,11 @@ import {
   Save,
   X
 } from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+import toast from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import AddProductDialog from '../components/AddProductDialog';
+import { ProductService } from '../services/productService';
+import { useEffect } from 'react';
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -35,7 +37,29 @@ const Admin = () => {
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-  const { toast } = useToast();
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+
+  // Load products from database
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    setIsLoadingProducts(true);
+    try {
+      const result = await ProductService.getProducts();
+      if (result.success && result.products) {
+        setDbProducts(result.products);
+      } else {
+        toast.error('Failed to load products');
+      }
+    } catch (error) {
+      toast.error('Failed to load products');
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
 
   // Mock data for dashboard
   const dashboardStats = [
@@ -84,36 +108,43 @@ const Admin = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveProduct = () => {
+  const handleSaveProduct = async () => {
     if (editingProduct) {
-      // Update the product in the products array (in a real app, this would be an API call)
-      const index = products.findIndex(p => p.id === editingProduct.id);
-      if (index !== -1) {
-        products[index] = editingProduct;
+      try {
+        const result = await ProductService.updateProduct(editingProduct.id, {
+          name: editingProduct.name,
+          price: editingProduct.price,
+          stockQuantity: editingProduct.stockQuantity,
+          // Add other fields as needed
+        });
+        
+        if (result.success) {
+          toast.success("Product updated successfully.");
+          loadProducts(); // Refresh products list
+          setIsEditDialogOpen(false);
+          setEditingProduct(null);
+        } else {
+          toast.error(result.error || 'Failed to update product');
+        }
+      } catch (error) {
+        toast.error('An unexpected error occurred');
       }
-      
-      toast({
-        title: "Product updated",
-        description: "Product has been successfully updated.",
-      });
-      
-      setIsEditDialogOpen(false);
-      setEditingProduct(null);
     }
   };
 
-  const handleDeleteProduct = (productId: string) => {
-    // Remove product from array (in a real app, this would be an API call)
-    const index = products.findIndex(p => p.id === productId);
-    if (index !== -1) {
-      products.splice(index, 1);
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      const result = await ProductService.deleteProduct(productId);
+      
+      if (result.success) {
+        toast.success("Product deleted successfully.");
+        loadProducts(); // Refresh products list
+      } else {
+        toast.error(result.error || 'Failed to delete product');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred');
     }
-    
-    toast({
-      title: "Product deleted",
-      description: "Product has been successfully deleted.",
-      variant: "destructive",
-    });
   };
 
   const handleEditOrder = (order: any) => {
@@ -127,10 +158,7 @@ const Admin = () => {
         recentOrders[index] = editingOrder;
       }
       
-      toast({
-        title: "Order updated",
-        description: "Order status has been successfully updated.",
-      });
+      toast.success("Order status has been successfully updated.");
       
       setEditingOrder(null);
     }
@@ -280,7 +308,21 @@ const Admin = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products.map((product) => (
+                  {isLoadingProducts ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                        <p className="text-sm text-muted-foreground">Loading products...</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : dbProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        <p className="text-muted-foreground">No products found</p>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    dbProducts.map((product) => (
                     <TableRow key={product.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -328,7 +370,8 @@ const Admin = () => {
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))
+                  )}
                 </TableBody>
               </Table>
             </Card>
@@ -453,7 +496,10 @@ const Admin = () => {
         {/* Add Product Dialog */}
         <AddProductDialog
           isOpen={isAddProductOpen}
-          onClose={() => setIsAddProductOpen(false)}
+          onClose={() => {
+            setIsAddProductOpen(false);
+            loadProducts(); // Refresh products when dialog closes
+          }}
         />
 
         {/* Edit Product Dialog */}

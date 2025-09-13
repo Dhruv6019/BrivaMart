@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Upload, Download, Plus, X } from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+import toast from 'react-hot-toast';
 import { categories, products } from '../data/mockData';
 import { Product } from '../types';
+import { ProductService } from '../services/productService';
 
 interface AddProductDialogProps {
   isOpen: boolean;
@@ -18,7 +19,6 @@ interface AddProductDialogProps {
 }
 
 const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) => {
-  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('manual');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -74,69 +74,60 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
     setFormData(prev => ({ ...prev, tags: prev.tags.filter(t => t !== tag) }));
   };
 
-  const handleManualSubmit = () => {
+  const handleManualSubmit = async () => {
     if (!formData.name || !formData.price || !formData.category) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields (Name, Price, Category).",
-        variant: "destructive"
-      });
+      toast.error("Please fill in all required fields (Name, Price, Category).");
       return;
     }
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      const newProduct: Product = {
-        id: `product-${Date.now()}`,
+    try {
+      const result = await ProductService.createProduct({
         name: formData.name,
         description: formData.description,
         price: parseFloat(formData.price),
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
-        images: formData.images.length > 0 ? formData.images : ['/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png'],
         category: formData.category,
         subcategory: formData.subcategory,
         brand: formData.brand,
-        rating: 0,
-        reviewCount: 0,
-        inStock: true,
+        images: formData.images.length > 0 ? formData.images : ['/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png'],
+        specifications: formData.specifications,
+        tags: formData.tags,
         stockQuantity: parseInt(formData.stockQuantity) || 0,
         lowStockAlert: parseInt(formData.lowStockAlert) || 5,
-        specifications: formData.specifications,
-        variants: [],
-        tags: formData.tags,
         featured: false,
         isNew: true,
         onSale: false
-      };
+      });
 
-      products.push(newProduct);
-      
-      toast({
-        title: "Product Added",
-        description: "Product has been successfully added to the catalog.",
-      });
-      
+      if (result.success) {
+        toast.success("Product has been successfully added to the catalog.");
+        onClose();
+        
+        // Reset form
+        setFormData({
+          name: '',
+          description: '',
+          price: '',
+          originalPrice: '',
+          category: '',
+          subcategory: '',
+          brand: '',
+          stockQuantity: '',
+          lowStockAlert: '',
+          specifications: {},
+          tags: [],
+          images: []
+        });
+      } else {
+        toast.error(result.error || 'Failed to add product');
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred');
+    } finally {
       setIsLoading(false);
-      onClose();
-      
-      // Reset form
-      setFormData({
-        name: '',
-        description: '',
-        price: '',
-        originalPrice: '',
-        category: '',
-        subcategory: '',
-        brand: '',
-        stockQuantity: '',
-        lowStockAlert: '',
-        specifications: {},
-        tags: [],
-        images: []
-      });
-    }, 1000);
+    }
   };
 
   const handleExcelUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,11 +135,7 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
     if (!file) return;
 
     if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls') && !file.name.endsWith('.csv')) {
-      toast({
-        title: "Invalid File",
-        description: "Please upload an Excel file (.xlsx, .xls) or CSV file.",
-        variant: "destructive"
-      });
+      toast.error("Please upload an Excel file (.xlsx, .xls) or CSV file.");
       return;
     }
 
@@ -208,10 +195,7 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
         products.push(newProduct);
       });
 
-      toast({
-        title: "Excel Import Complete",
-        description: `Successfully imported ${mockExcelProducts.length} products from Excel file.`,
-      });
+      toast.success(`Successfully imported ${mockExcelProducts.length} products from Excel file.`);
       
       setIsLoading(false);
       onClose();
@@ -234,10 +218,7 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 
-    toast({
-      title: "Template Downloaded",
-      description: "Excel template has been downloaded to your computer.",
-    });
+    toast.success("Excel template has been downloaded to your computer.");
   };
 
   return (

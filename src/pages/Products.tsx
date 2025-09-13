@@ -1,7 +1,6 @@
-import { useState, useMemo } from 'react';
-import { products, categories } from '../data/mockData';
+import { useState, useMemo, useEffect } from 'react';
+import { categories } from '../data/mockData';
 import ProductGrid from '../components/ProductGrid';
-import CategoryCard from '../components/CategoryCard';
 import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Badge } from '../components/ui/badge';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Search, Filter, Grid, List, ChefHat, Wrench, Scissors, Home, Smartphone } from 'lucide-react';
+import { useProducts } from '../hooks/useProducts';
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +16,32 @@ const Products = () => {
   const [sortBy, setSortBy] = useState<string>('name');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<string>('all');
+
+  // Use the products hook with filters
+  const filters = useMemo(() => {
+    const filterObj: any = {};
+    
+    if (searchTerm) filterObj.search = searchTerm;
+    if (selectedCategory !== 'all') filterObj.category = selectedCategory;
+    
+    if (priceRange !== 'all') {
+      switch (priceRange) {
+        case 'under-50':
+          filterObj.priceRange = [0, 50];
+          break;
+        case '50-100':
+          filterObj.priceRange = [50, 100];
+          break;
+        case 'over-100':
+          filterObj.priceRange = [100, 999999];
+          break;
+      }
+    }
+    
+    return filterObj;
+  }, [searchTerm, selectedCategory, priceRange]);
+
+  const { products, isLoading } = useProducts(filters);
 
   const categoryIcons = {
     'Kitchen Ware': ChefHat,
@@ -27,35 +53,6 @@ const Products = () => {
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
-
-    // Category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(product => product.category === selectedCategory);
-    }
-
-    // Price range filter
-    if (priceRange !== 'all') {
-      switch (priceRange) {
-        case 'under-10k':
-          filtered = filtered.filter(product => product.price < 10000);
-          break;
-        case '10k-25k':
-          filtered = filtered.filter(product => product.price >= 10000 && product.price <= 25000);
-          break;
-        case 'over-25k':
-          filtered = filtered.filter(product => product.price > 25000);
-          break;
-      }
-    }
 
     // Sort
     switch (sortBy) {
@@ -76,7 +73,7 @@ const Products = () => {
     }
 
     return filtered;
-  }, [searchTerm, selectedCategory, sortBy, priceRange]);
+  }, [products, sortBy]);
 
   return (
     <>
@@ -199,9 +196,9 @@ const Products = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Prices</SelectItem>
-                <SelectItem value="under-10k">Under $10,000</SelectItem>
-                <SelectItem value="10k-25k">$10,000 - $25,000</SelectItem>
-                <SelectItem value="over-25k">Over $25,000</SelectItem>
+                <SelectItem value="under-50">Under $50</SelectItem>
+                <SelectItem value="50-100">$50 - $100</SelectItem>
+                <SelectItem value="over-100">Over $100</SelectItem>
               </SelectContent>
             </Select>
 
@@ -246,9 +243,9 @@ const Products = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Prices</SelectItem>
-                <SelectItem value="under-10k">Under $10k</SelectItem>
-                <SelectItem value="10k-25k">$10k - $25k</SelectItem>
-                <SelectItem value="over-25k">Over $25k</SelectItem>
+                <SelectItem value="under-50">Under $50</SelectItem>
+                <SelectItem value="50-100">$50 - $100</SelectItem>
+                <SelectItem value="over-100">Over $100</SelectItem>
               </SelectContent>
             </Select>
 
@@ -298,7 +295,7 @@ const Products = () => {
               )}
               {priceRange !== 'all' && (
                 <Badge variant="secondary" className="cursor-pointer" onClick={() => setPriceRange('all')}>
-                  {priceRange.replace('-', ' - $').replace('k', ',000')} ×
+                  {priceRange.replace('-', ' - $')} ×
                 </Badge>
               )}
             </div>
@@ -314,7 +311,7 @@ const Products = () => {
           </p>
         </div>
         
-        <ProductGrid products={filteredProducts} viewMode={viewMode} />
+        <ProductGrid products={filteredProducts} viewMode={viewMode} loading={isLoading} />
       </div>
       </div>
     </>

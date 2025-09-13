@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { AuthService } from '../services/authService';
 import Navbar from '../components/Navbar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -9,23 +10,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
-import { User, Package, Heart, Settings, LogOut } from 'lucide-react';
+import { User, Package, Heart, Settings, LogOut, Shield, Smartphone, Trash2, AlertTriangle } from 'lucide-react';
 import { useCartContext } from '../contexts/CartContext';
-import { useToast } from '../hooks/use-toast';
+import toast from 'react-hot-toast';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
 
 const Profile = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile, deleteAccount } = useAuth();
   const { cartItems, wishlistItems } = useCartContext();
-  const { toast } = useToast();
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
   
   const [profileData, setProfileData] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    phone: '',
-    address: '',
-    city: '',
-    zipCode: ''
+    phone: user?.phone || '',
+    avatarUrl: user?.avatarUrl || ''
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -34,37 +35,83 @@ const Profile = () => {
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    if (user) {
+      setProfileData({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone || '',
+        avatarUrl: user.avatarUrl || ''
+      });
+    }
+  }, [user]);
+
+  const loadSessions = async () => {
+    setIsLoadingSessions(true);
+    try {
+      const result = await AuthService.getUserSessions();
+      if (result.success && result.sessions) {
+        setSessions(result.sessions);
+      }
+    } catch (error) {
+      toast.error('Failed to load sessions');
+    } finally {
+      setIsLoadingSessions(false);
+    }
+  };
+
+  const handleRevokeSession = async (sessionId: string) => {
+    try {
+      const result = await AuthService.revokeSession(sessionId);
+      if (result.success) {
+        toast.success('Session revoked successfully');
+        loadSessions(); // Refresh sessions list
+      } else {
+        toast.error(result.error || 'Failed to revoke session');
+      }
+    } catch (error) {
+      toast.error('Failed to revoke session');
+    }
+  };
+
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Profile updated",
-      description: "Your profile has been updated successfully.",
+    
+    updateProfile({
+      firstName: profileData.firstName,
+      lastName: profileData.lastName,
+      phone: profileData.phone,
+      avatarUrl: profileData.avatarUrl
     });
   };
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast({
-        title: "Password mismatch",
-        description: "New passwords do not match.",
-        variant: "destructive",
-      });
+      toast.error("New passwords do not match.");
       return;
     }
-    toast({
-      title: "Password changed",
-      description: "Your password has been changed successfully.",
-    });
+    
+    // In a real app, you would call a password change API
+    toast.success("Password changed successfully.");
     setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout();
-    toast({
-      title: "Signed out",
-      description: "You have been successfully signed out.",
-    });
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const result = await deleteAccount();
+      if (!result.success) {
+        toast.error(result.error || 'Failed to delete account');
+      }
+      // Success toast is handled in the context
+    } catch (error) {
+      toast.error('Failed to delete account');
+    }
   };
 
   const mockOrders = [
@@ -72,14 +119,14 @@ const Profile = () => {
       id: 'ORD-001',
       date: '2024-01-15',
       status: 'Delivered',
-      total: '$24,999',
+      total: '$89',
       items: 2
     },
     {
       id: 'ORD-002',
       date: '2024-01-10',
       status: 'Processing',
-      total: '$18,999',
+      total: '$159',
       items: 1
     }
   ];
@@ -92,7 +139,7 @@ const Profile = () => {
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user?.avatar} />
+              <AvatarImage src={user?.avatarUrl} />
               <AvatarFallback className="text-lg">
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </AvatarFallback>
@@ -100,19 +147,32 @@ const Profile = () => {
             <div>
               <h1 className="text-3xl font-bold">{user?.firstName} {user?.lastName}</h1>
               <p className="text-muted-foreground">{user?.email}</p>
-              <Badge variant={user?.role === 'admin' ? 'default' : 'secondary'}>
-                {user?.role === 'admin' ? 'Administrator' : 'Customer'}
-              </Badge>
+              <div className="flex gap-2 mt-2">
+                <Badge variant={user?.role === 'admin' ? 'default' : 'secondary'}>
+                  {user?.role === 'admin' ? 'Administrator' : 'Customer'}
+                </Badge>
+                {user?.emailVerified && (
+                  <Badge variant="outline" className="text-green-600 border-green-600">
+                    Email Verified
+                  </Badge>
+                )}
+                {user?.phoneVerified && (
+                  <Badge variant="outline" className="text-blue-600 border-blue-600">
+                    Phone Verified
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
 
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="orders">Orders</TabsTrigger>
               <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="sessions">Sessions</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -275,45 +335,34 @@ const Profile = () => {
                         id="email"
                         type="email"
                         value={profileData.email}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
+                        disabled
+                        className="bg-muted"
                       />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Email cannot be changed. Contact support if needed.
+                      </p>
                     </div>
                     
                     <div>
                       <Label htmlFor="phone">Phone</Label>
                       <Input
                         id="phone"
+                        type="tel"
                         value={profileData.phone}
                         onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
+                        placeholder="+1 (555) 123-4567"
                       />
                     </div>
                     
                     <div>
-                      <Label htmlFor="address">Address</Label>
+                      <Label htmlFor="avatarUrl">Avatar URL</Label>
                       <Input
-                        id="address"
-                        value={profileData.address}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, address: e.target.value }))}
+                        id="avatarUrl"
+                        type="url"
+                        value={profileData.avatarUrl}
+                        onChange={(e) => setProfileData(prev => ({ ...prev, avatarUrl: e.target.value }))}
+                        placeholder="https://example.com/avatar.jpg"
                       />
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="city">City</Label>
-                        <Input
-                          id="city"
-                          value={profileData.city}
-                          onChange={(e) => setProfileData(prev => ({ ...prev, city: e.target.value }))}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="zipCode">ZIP Code</Label>
-                        <Input
-                          id="zipCode"
-                          value={profileData.zipCode}
-                          onChange={(e) => setProfileData(prev => ({ ...prev, zipCode: e.target.value }))}
-                        />
-                      </div>
                     </div>
                     
                     <Button type="submit">Update Profile</Button>
@@ -369,14 +418,103 @@ const Profile = () => {
                   <CardHeader>
                     <CardTitle>Account Actions</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <Button variant="destructive" onClick={handleLogout} className="w-full">
+                  <CardContent className="space-y-4">
+                    <Button variant="outline" onClick={handleLogout} className="w-full">
                       <LogOut className="h-4 w-4 mr-2" />
                       Sign Out
                     </Button>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" className="w-full">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete Account
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="flex items-center gap-2">
+                            <AlertTriangle className="h-5 w-5 text-destructive" />
+                            Delete Account
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete your account
+                            and remove all your data from our servers including orders, wishlist, and profile information.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={handleDeleteAccount}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete Account
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="sessions" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span>Active Sessions</span>
+                    <Button onClick={loadSessions} variant="outline" size="sm">
+                      Refresh
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoadingSessions ? (
+                    <div className="text-center py-8">
+                      <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                      <p className="text-sm text-muted-foreground">Loading sessions...</p>
+                    </div>
+                  ) : sessions.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Smartphone className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">No active sessions found</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {sessions.map((session) => (
+                        <div key={session.id} className="border rounded-lg p-4">
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
+                                <span className="font-medium">
+                                  {session.device_info?.platform || 'Unknown Device'}
+                                </span>
+                                <Badge variant="outline" className="text-xs">
+                                  {session.ip_address || 'Unknown IP'}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                Last activity: {new Date(session.last_activity).toLocaleString()}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Expires: {new Date(session.expires_at).toLocaleString()}
+                              </p>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleRevokeSession(session.id)}
+                            >
+                              Revoke
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
