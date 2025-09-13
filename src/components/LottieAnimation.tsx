@@ -3,14 +3,14 @@ import React from "react";
 import Lottie from "lottie-react";
 
 interface LottieAnimationProps {
-  animationPath: string;
+  path: string;
   className?: string;
   loop?: boolean;
   autoplay?: boolean;
 }
 
 const LottieAnimation = ({
-  animationPath,
+  path,
   className = "",
   loop = true,
   autoplay = true,
@@ -18,7 +18,7 @@ const LottieAnimation = ({
   return (
     <div className={className}>
       <Lottie
-        animationData={animationPath}
+        path={path}
         loop={loop}
         autoplay={autoplay}
         style={{ width: "100%", height: "100%" }}
