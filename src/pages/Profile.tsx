@@ -12,11 +12,12 @@ import { Badge } from '../components/ui/badge';
 import { Separator } from '../components/ui/separator';
 import { User, Package, Heart, Settings, LogOut, Shield, Smartphone, Trash2, AlertTriangle } from 'lucide-react';
 import { useCartContext } from '../contexts/CartContext';
-import toast from 'react-hot-toast';
+import { useToast } from '../hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../components/ui/alert-dialog';
 
 const Profile = () => {
   const { user, logout, updateProfile, deleteAccount } = useAuth();
+  const { toast } = useToast();
   const { cartItems, wishlistItems } = useCartContext();
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
@@ -55,7 +56,11 @@ const Profile = () => {
         setSessions(result.sessions);
       }
     } catch (error) {
-      toast.error('Failed to load sessions');
+      toast({
+        title: "Error",
+        description: "Failed to load sessions",
+        variant: "destructive"
+      });
     } finally {
       setIsLoadingSessions(false);
     }
@@ -65,13 +70,24 @@ const Profile = () => {
     try {
       const result = await AuthService.revokeSession(sessionId);
       if (result.success) {
-        toast.success('Session revoked successfully');
+        toast({
+          title: "Session Revoked",
+          description: "Session revoked successfully"
+        });
         loadSessions(); // Refresh sessions list
       } else {
-        toast.error(result.error || 'Failed to revoke session');
+        toast({
+          title: "Error",
+          description: result.error || 'Failed to revoke session',
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast.error('Failed to revoke session');
+      toast({
+        title: "Error",
+        description: "Failed to revoke session",
+        variant: "destructive"
+      });
     }
   };
 
@@ -89,12 +105,19 @@ const Profile = () => {
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error("New passwords do not match.");
+      toast({
+        title: "Password Mismatch",
+        description: "New passwords do not match.",
+        variant: "destructive"
+      });
       return;
     }
     
     // In a real app, you would call a password change API
-    toast.success("Password changed successfully.");
+    toast({
+      title: "Password Changed",
+      description: "Password changed successfully."
+    });
     setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
   };
 
@@ -106,11 +129,19 @@ const Profile = () => {
     try {
       const result = await deleteAccount();
       if (!result.success) {
-        toast.error(result.error || 'Failed to delete account');
+        toast({
+          title: "Error",
+          description: result.error || 'Failed to delete account',
+          variant: "destructive"
+        });
       }
       // Success toast is handled in the context
     } catch (error) {
-      toast.error('Failed to delete account');
+      toast({
+        title: "Error",
+        description: "Failed to delete account",
+        variant: "destructive"
+      });
     }
   };
 

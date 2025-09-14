@@ -17,10 +17,11 @@ import {
   Monitor,
   Trash2
 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useToast } from '../hooks/use-toast';
 
 const SecurityDashboard = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [sessions, setSessions] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +58,11 @@ const SecurityDashboard = () => {
         }
       ]);
     } catch (error) {
-      toast.error('Failed to load security data');
+      toast({
+        title: "Error",
+        description: "Failed to load security data",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -67,13 +72,24 @@ const SecurityDashboard = () => {
     try {
       const result = await AuthService.revokeSession(sessionId);
       if (result.success) {
-        toast.success('Session revoked successfully');
+        toast({
+          title: "Session Revoked",
+          description: "Session revoked successfully"
+        });
         loadSecurityData();
       } else {
-        toast.error(result.error || 'Failed to revoke session');
+        toast({
+          title: "Error",
+          description: result.error || 'Failed to revoke session',
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast.error('Failed to revoke session');
+      toast({
+        title: "Error",
+        description: "Failed to revoke session",
+        variant: "destructive"
+      });
     }
   };
 

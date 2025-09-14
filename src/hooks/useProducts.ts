@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ProductService, ProductFilters } from '../services/productService';
 import { Product } from '../types';
-import toast from 'react-hot-toast';
+import { toast } from '../components/ui/use-toast';
 
 export const useProducts = (filters: ProductFilters = {}) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,12 +19,20 @@ export const useProducts = (filters: ProductFilters = {}) => {
         setProducts(result.products);
       } else {
         setError(result.error || 'Failed to load products');
-        toast.error(result.error || 'Failed to load products');
+        toast({
+          title: "Error",
+          description: result.error || 'Failed to load products',
+          variant: "destructive"
+        });
       }
     } catch (error) {
       const errorMessage = 'An unexpected error occurred while loading products';
       setError(errorMessage);
-      toast.error(errorMessage);
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -39,7 +47,10 @@ export const useProducts = (filters: ProductFilters = {}) => {
       const result = await ProductService.createProduct(productData);
       
       if (result.success) {
-        toast.success('Product created successfully');
+      toast({
+        title: "Product Created",
+        description: "Product created successfully"
+      });
         loadProducts(); // Refresh the list
         return { success: true };
       } else {
@@ -90,11 +101,30 @@ export const useProducts = (filters: ProductFilters = {}) => {
 
   return {
     products,
-    isLoading,
+      toast({
+        title: "Error",
+        description: result.error || 'Failed to create product',
+        variant: "destructive"
+     toast({
+       title: "Product Updated",
+       description: "Product updated successfully"
+     });
     error,
     loadProducts,
     createProduct,
-    updateProduct,
+    toast({
+      title: "Error",
+      description: result.error || 'Failed to update product',
+      variant: "destructive"
+    });
+      title: "Error",
+      description: "An unexpected error occurred",
+      variant: "destructive"
+  toast({
+    title: "Error",
+    description: "An unexpected error occurred",
+    variant: "destructive"
+  });
     deleteProduct
   };
 };

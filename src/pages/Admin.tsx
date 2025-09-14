@@ -25,13 +25,14 @@ import {
   Save,
   X
 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useToast } from '../hooks/use-toast';
 import Navbar from '../components/Navbar';
 import AddProductDialog from '../components/AddProductDialog';
 import { ProductService } from '../services/productService';
 import { useEffect } from 'react';
 
 const Admin = () => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingOrder, setEditingOrder] = useState<any>(null);
@@ -52,10 +53,18 @@ const Admin = () => {
       if (result.success && result.products) {
         setDbProducts(result.products);
       } else {
-        toast.error('Failed to load products');
+        toast({
+          title: "Error",
+          description: "Failed to load products",
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast.error('Failed to load products');
+      toast({
+        title: "Error",
+        description: "Failed to load products",
+        variant: "destructive"
+      });
     } finally {
       setIsLoadingProducts(false);
     }
@@ -119,15 +128,26 @@ const Admin = () => {
         });
         
         if (result.success) {
-          toast.success("Product updated successfully.");
+          toast({
+            title: "Product Updated",
+            description: "Product updated successfully."
+          });
           loadProducts(); // Refresh products list
           setIsEditDialogOpen(false);
           setEditingProduct(null);
         } else {
-          toast.error(result.error || 'Failed to update product');
+          toast({
+            title: "Update Failed",
+            description: result.error || 'Failed to update product',
+            variant: "destructive"
+          });
         }
       } catch (error) {
-        toast.error('An unexpected error occurred');
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred",
+          variant: "destructive"
+        });
       }
     }
   };
@@ -137,13 +157,24 @@ const Admin = () => {
       const result = await ProductService.deleteProduct(productId);
       
       if (result.success) {
-        toast.success("Product deleted successfully.");
+        toast({
+          title: "Product Deleted",
+          description: "Product deleted successfully."
+        });
         loadProducts(); // Refresh products list
       } else {
-        toast.error(result.error || 'Failed to delete product');
+        toast({
+          title: "Delete Failed",
+          description: result.error || 'Failed to delete product',
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
     }
   };
 
@@ -158,7 +189,10 @@ const Admin = () => {
         recentOrders[index] = editingOrder;
       }
       
-      toast.success("Order status has been successfully updated.");
+      toast({
+        title: "Order Updated",
+        description: "Order status has been successfully updated."
+      });
       
       setEditingOrder(null);
     }

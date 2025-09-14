@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Upload, Download, Plus, X } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { useToast } from '../hooks/use-toast';
 import { categories, products } from '../data/mockData';
 import { Product } from '../types';
 import { ProductService } from '../services/productService';
@@ -19,6 +19,7 @@ interface AddProductDialogProps {
 }
 
 const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('manual');
   const [isLoading, setIsLoading] = useState(false);
   
@@ -76,7 +77,11 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
 
   const handleManualSubmit = async () => {
     if (!formData.name || !formData.price || !formData.category) {
-      toast.error("Please fill in all required fields (Name, Price, Category).");
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields (Name, Price, Category).",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -102,7 +107,10 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
       });
 
       if (result.success) {
-        toast.success("Product has been successfully added to the catalog.");
+        toast({
+          title: "Product Added",
+          description: "Product has been successfully added to the catalog."
+        });
         onClose();
         
         // Reset form
@@ -121,10 +129,18 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
           images: []
         });
       } else {
-        toast.error(result.error || 'Failed to add product');
+        toast({
+          title: "Error",
+          description: result.error || 'Failed to add product',
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -135,7 +151,11 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
     if (!file) return;
 
     if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls') && !file.name.endsWith('.csv')) {
-      toast.error("Please upload an Excel file (.xlsx, .xls) or CSV file.");
+      toast({
+        title: "Invalid File",
+        description: "Please upload an Excel file (.xlsx, .xls) or CSV file.",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -195,7 +215,10 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
         products.push(newProduct);
       });
 
-      toast.success(`Successfully imported ${mockExcelProducts.length} products from Excel file.`);
+      toast({
+        title: "Import Successful",
+        description: `Successfully imported ${mockExcelProducts.length} products from Excel file.`
+      });
       
       setIsLoading(false);
       onClose();
@@ -218,7 +241,10 @@ const AddProductDialog: React.FC<AddProductDialogProps> = ({ isOpen, onClose }) 
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 
-    toast.success("Excel template has been downloaded to your computer.");
+    toast({
+      title: "Download Complete",
+      description: "Excel template has been downloaded to your computer."
+    });
   };
 
   return (

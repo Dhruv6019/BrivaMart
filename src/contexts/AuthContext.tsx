@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AuthService, UserProfile } from '../services/authService';
 import { supabase } from '../lib/supabase';
-import toast from 'react-hot-toast';
+import { toast } from '../components/ui/use-toast';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -69,7 +69,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (result.success && result.user) {
         setUser(result.user);
-        toast.success('Welcome back!');
+        toast({
+          title: "Welcome back!",
+          description: "You have been successfully signed in."
+        });
       }
       
       setIsLoading(false);
@@ -111,7 +114,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const result = await AuthService.verifyOTP({ verificationId, code });
       
       if (result.success) {
-        toast.success('Verification successful!');
+        toast({
+          title: "Verification Successful",
+          description: "Your email has been verified."
+        });
         // Refresh user data
         const userResult = await AuthService.getCurrentUser();
         if (userResult.success && userResult.user) {
@@ -138,7 +144,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const result = await AuthService.resetPassword(verificationId, otpCode, newPassword);
       
       if (result.success) {
-        toast.success('Password reset successful!');
+        toast({
+          title: "Password Reset",
+          description: "Your password has been reset successfully."
+        });
       }
       
       return result;
@@ -153,7 +162,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (result.success && result.user) {
         setUser(result.user);
-        toast.success('Profile updated successfully!');
+        toast({
+          title: "Profile Updated",
+          description: "Your profile has been updated successfully."
+        });
       }
       
       return { success: result.success, error: result.error };
@@ -168,7 +180,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       
       if (result.success) {
         setUser(null);
-        toast.success('Account deleted successfully');
+        toast({
+          title: "Account Deleted",
+          description: "Your account has been deleted successfully."
+        });
       }
       
       return result;
@@ -181,10 +196,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       await AuthService.signout();
       setUser(null);
-      toast.success('Signed out successfully');
+      toast({
+        title: "Signed Out",
+        description: "You have been signed out successfully."
+      });
     } catch (error) {
       console.error('Logout error:', error);
-      toast.error('Error signing out');
+      toast({
+        title: "Error",
+        description: "Error signing out",
+        variant: "destructive"
+      });
     }
   };
 

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Eye, EyeOff, Loader2, Mail, Phone, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { useToast } from '../hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -49,6 +49,7 @@ const newPasswordSchema = z.object({
 
 const Login = () => {
   const { login, register, verifyOTP, requestPasswordReset, resetPassword, isLoading } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -100,7 +101,11 @@ const Login = () => {
     if (result.success) {
       navigate(from, { replace: true });
     } else {
-      toast.error(result.error || 'Login failed');
+      toast({
+        title: "Login Failed",
+        description: result.error || 'Login failed',
+        variant: "destructive"
+      });
     }
   };
 
@@ -117,9 +122,16 @@ const Login = () => {
       setVerificationId(result.verificationId || '');
       setOtpCode(result.otpCode || ''); // For demo - in production this would be sent via email/SMS
       setStep('otp');
-      toast.success('Account created! Please verify your email with the OTP code.');
+      toast({
+        title: "Account Created",
+        description: "Please verify your email with the OTP code."
+      });
     } else {
-      toast.error(result.error || 'Registration failed');
+      toast({
+        title: "Registration Failed",
+        description: result.error || 'Registration failed',
+        variant: "destructive"
+      });
     }
   };
 
@@ -129,9 +141,16 @@ const Login = () => {
     if (result.success) {
       setStep('form');
       setActiveTab('login');
-      toast.success('Email verified successfully! You can now sign in.');
+      toast({
+        title: "Email Verified",
+        description: "You can now sign in."
+      });
     } else {
-      toast.error(result.error || 'Invalid OTP code');
+      toast({
+        title: "Verification Failed",
+        description: result.error || 'Invalid OTP code',
+        variant: "destructive"
+      });
     }
   };
 
@@ -143,9 +162,16 @@ const Login = () => {
       setOtpCode(result.otpCode || '');
       setResetEmail(data.email);
       setStep('reset-otp');
-      toast.success('Reset code sent to your email!');
+      toast({
+        title: "Reset Code Sent",
+        description: "Check your email for the reset code."
+      });
     } else {
-      toast.error(result.error || 'Failed to send reset code');
+      toast({
+        title: "Reset Failed",
+        description: result.error || 'Failed to send reset code',
+        variant: "destructive"
+      });
     }
   };
 
@@ -155,9 +181,16 @@ const Login = () => {
     if (result.success) {
       setStep('form');
       setActiveTab('login');
-      toast.success('Password reset successfully! You can now sign in with your new password.');
+      toast({
+        title: "Password Reset",
+        description: "You can now sign in with your new password."
+      });
     } else {
-      toast.error(result.error || 'Failed to reset password');
+      toast({
+        title: "Reset Failed",
+        description: result.error || 'Failed to reset password',
+        variant: "destructive"
+      });
     }
   };
 
